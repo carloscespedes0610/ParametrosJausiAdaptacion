@@ -128,6 +128,8 @@ namespace Parametros.Models.DAC
 
             PropertyInit();
             FilterInit();
+
+
         }
 
 
@@ -233,6 +235,7 @@ namespace Parametros.Models.DAC
                 case WhereFilters.Grid:
                     Array.Resize(ref moParameters, moParameters.Length + 2);
                     moParameters[3] = new SqlParameter("@DocId", Convert.ToInt32(0));
+                    
                     moParameters[4] = new SqlParameter("@EstadoId", Convert.ToInt32(0));
 
                     break;
