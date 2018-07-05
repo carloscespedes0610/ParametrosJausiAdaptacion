@@ -1,14 +1,13 @@
-﻿using Parametros.Models.DAC;
+﻿using Parametros.Controllers;
+using Parametros.Models.DAC;
 using Parametros.Models.Modules;
 using Parametros.Models.VM;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using System.Xml;
 
-namespace Parametros.Controllers
+namespace pa.Controllers
 {
     public class LoginController : Controller
     {
@@ -17,245 +16,124 @@ namespace Parametros.Controllers
         {
             try
             {
-                clsLoginVM oLogin = new clsLoginVM();
+                clsLoginVM oLoginVM = new clsLoginVM();
 
-                oLogin.UsuarioCod = "jmercado";
-                oLogin.UsuarioPass = "123";
+                oLoginVM.UsuarioCod = "jmercado";
+                oLoginVM.UsuarioPass = "123";
+
                 ViewBag.EmpresaId = new SelectList(EmpresaList(), "EmpresaId", "EmpresaDes");
-                return View(oLogin);
-            }
-            catch (Exception ex) {
-                return RedirectToAction("ErrorMsg","Error", new {@MessageErr= ex.Message });
+                return View(oLoginVM);
             }
 
-           
+            catch (Exception exp)
+            {
+                return RedirectToAction("ErrorMsg", "Error", new { KeyMessageErr = exp.Message });
+            }
         }
 
-        [HttpPost, ValidateAntiForgeryToken()]
-        public ActionResult Index(clsLoginVM oLoginDAO)
+        [HttpPost]
+        [ValidateAntiForgeryToken()]
+        public ActionResult Index(clsLoginVM oLoginVM)
         {
-            try
+            this.GetDefaultData();
+
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                clsEmpresaVM oEmpresaVM = EmpresaList().Find(x => x.EmpresaId == oLoginVM.EmpresaId);
+
+                try
                 {
-                    clsEmpresaVM oEmpresaDAO = EmpresaList().Find((x) => x.EmpresaId == oLoginDAO.EmpresaId);
+                    clsAppInfo.Init(oEmpresaVM.DataSource, oEmpresaVM.InitialCatalog, SysData.ToStr(oLoginVM.UsuarioCod), oLoginVM.UsuarioPass);
 
-                    try
+                    if (clsAppInfo.OpenConection())
                     {
-                        clsAppInfo.Init(oEmpresaDAO.DataSource, oEmpresaDAO.InitialCatalog, (string)(oLoginDAO.UsuarioCod), oLoginDAO.UsuarioPass);
-
-                        if (clsAppInfo.OpenConection())
+                        if (AppCode.AplicacionFind(clsAppInfo.AplicacionId))
                         {
-                            if (AppCode.AplicacionFind(1))
+                            if (AppCode.UsuarioCodFind(SysData.ToStr(oLoginVM.UsuarioCod)))
                             {
-                                if (UsuarioCodFind((oLoginDAO.UsuarioCod)))
+                                if (AppCode.AutorizaFind(clsAppInfo.TipoUsuarioId, clsAppInfo.AutorizaItemId, clsAppInfo.AplicacionId))
                                 {
-                                    if (AppCode.AutorizaFind(clsAppInfo.TipoUsuarioId, "segAplicacion", 1))
-                                    {
-                                        Session["User"] = clsAppInfo.UsuarioCod;
-                                        clsAppInfo.AppPath = Request.UrlReferrer.OriginalString;
-                                        return RedirectToAction("Index", "Home");
-
-                                    }
-                                    else
-                                    {
-                                        ViewBag.MessageErr = "Aplicación no Autorizada para el Usuario";
-                                        ViewBag.EmpresaId = new SelectList(EmpresaList(), "EmpresaId", "EmpresaDes");
-                                        return View(oLoginDAO);
-                                    }
-
+                                    Session["User"] = clsAppInfo.UsuarioCod;
+                                    clsAppInfo.AppPath = Request.UrlReferrer.OriginalString;
+                                    return RedirectToAction("Index", "Home");
                                 }
                                 else
                                 {
-                                    ViewBag.MessageErr = "Usuario no Registrado";
+                                    ViewBag.MessageErr = "Aplicación no Autorizada para el Usuario";
                                     ViewBag.EmpresaId = new SelectList(EmpresaList(), "EmpresaId", "EmpresaDes");
-                                    return View(oLoginDAO);
+                                    return View(oLoginVM);
                                 }
-
                             }
                             else
                             {
-                                ViewBag.MessageErr = "Aplicación no Autorizada";
+                                ViewBag.MessageErr = "Usuario no Registrado";
                                 ViewBag.EmpresaId = new SelectList(EmpresaList(), "EmpresaId", "EmpresaDes");
-                                return View(oLoginDAO);
+                                return View(oLoginVM);
                             }
                         }
-
-                    }
-                    catch (Exception exp)
-                    {
-                        ViewBag.MessageErr = Convert.ToString(exp.Message);
-                        ViewBag.EmpresaId = new SelectList(EmpresaList(), "EmpresaId", "EmpresaDes");
-                        return View(oLoginDAO);
+                        else
+                        {
+                            ViewBag.MessageErr = "Aplicación no Autorizada";
+                            ViewBag.EmpresaId = new SelectList(EmpresaList(), "EmpresaId", "EmpresaDes");
+                            return View(oLoginVM);
+                        }
                     }
                 }
 
-                ViewBag.EmpresaId = new SelectList(EmpresaList(), "EmpresaId", "EmpresaDes");
-                return View(oLoginDAO);
-
-            }
-            catch (Exception exp)
-            {
-                return RedirectToAction("ErrorMsg", "Error", new { MessageErr = exp.Message });
-            }
-        }
-
-      
-
-
-        // GET: Login/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: Login/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Login/Create
-        [HttpPost]
-        public ActionResult Create(FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add insert logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Login/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: Login/Edit/5
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Login/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Login/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-
-        private List<clsEmpresaVM> EmpresaList() {
-            List<clsEmpresaVM> empresaList = new List<clsEmpresaVM>();
-            XmlDocument xml;
-            XmlNodeList nodeList;
-           // XmlNode node;
-
-            try
-            {
-                xml = new XmlDocument();
-                xml.Load(Server.MapPath("~/Models/Empresa.xml"));
-                nodeList = xml.SelectNodes("/EmpresaList/Empresa");
-
-                foreach ( XmlNode node in nodeList){
-
-                    empresaList.Add(new clsEmpresaVM()
-					{
-						EmpresaId = long.Parse((node.Attributes.GetNamedItem("EmpresaId").Value)),
-						EmpresaDes = (node.Attributes.GetNamedItem("EmpresaDes").Value),
-						DataSource = (node.Attributes.GetNamedItem("DataSource").Value),
-						InitialCatalog = (node.Attributes.GetNamedItem("InitialCatalog").Value)
-					});
-
-                }
-
-
-            }
-            catch (Exception ex) {
-               
-            }
-
-
-            return empresaList;
-        }
-
-
-        public bool UsuarioCodFind(string strUsuarioCod)
-        {
-            bool tempUsuarioCodFind = false;
-            clsUsuario oUsuario = new clsUsuario(clsAppInfo.Connection);
-
-            tempUsuarioCodFind = false;
-
-            clsAppInfo.TipoUsuarioId = 0;
-            clsAppInfo.UsuarioId = 0;
-            clsAppInfo.UsuarioCod = "";
-            clsAppInfo.UsuarioDes = "";
-
-            try
-            {
-                oUsuario.SelectFilter = clsUsuario.SelectFilters.All;
-                oUsuario.WhereFilter = clsUsuario.WhereFilters.UsuarioCod;
-                oUsuario.UsuarioCod = strUsuarioCod;
-
-                if (oUsuario.Find())
+                catch (Exception exp)
                 {
-                    if (oUsuario.EstadoId == ConstEstado.Activo)
-                    {
-                        clsAppInfo.TipoUsuarioId = oUsuario.TipoUsuarioId;
-                        clsAppInfo.UsuarioId = oUsuario.UsuarioId;
-                        clsAppInfo.UsuarioCod = oUsuario.UsuarioCod;
-                        clsAppInfo.UsuarioDes = oUsuario.UsuarioDes;
-                        clsAppInfo.UsuarioFotoPath = oUsuario.UsuarioFotoPath;
-
-                        tempUsuarioCodFind = true;
-                    }
+                    ViewBag.MessageErr = Convert.ToString(exp.Message);
+                    ViewBag.EmpresaId = new SelectList(EmpresaList(), "EmpresaId", "EmpresaDes");
+                    return View(oLoginVM);
                 }
+            }
 
-            }
-            catch (Exception exp)
-            {
-                throw exp;
+            ViewBag.EmpresaId = new SelectList(EmpresaList(), "EmpresaId", "EmpresaDes");
+            return View(oLoginVM);
+        }
 
-            }
-            finally
-            {
-                oUsuario.Dispose();
-            }
-            return tempUsuarioCodFind;
+        public ActionResult LogOut()
+        {
+            Session.Clear();
+
+            return RedirectToAction("Index", "Login");
         }
 
 
+
+
+        public List<clsEmpresaVM> EmpresaList()
+        {
+            List<clsEmpresaVM> oEmpresaVM = new List<clsEmpresaVM>();
+            XmlDocument Xml = default(XmlDocument);
+            XmlNodeList NodeList = default(XmlNodeList);
+            XmlNode Node = default(XmlNode);
+
+            try
+            {
+                Xml = new XmlDocument();
+                Xml.Load(Server.MapPath("~/Models/Empresa.xml"));
+                NodeList = Xml.SelectNodes("/EmpresaList/Empresa");
+
+                foreach (XmlNode tempLoopVar_Node in NodeList)
+                {
+                    Node = tempLoopVar_Node;
+                    oEmpresaVM.Add(new clsEmpresaVM()
+                    {
+                        EmpresaId = SysData.ToLong(Node.Attributes.GetNamedItem("EmpresaId").Value),
+                        EmpresaDes = SysData.ToStr(Node.Attributes.GetNamedItem("EmpresaDes").Value),
+                        DataSource = SysData.ToStr(Node.Attributes.GetNamedItem("DataSource").Value),
+                        InitialCatalog = SysData.ToStr(Node.Attributes.GetNamedItem("InitialCatalog").Value)
+                    });
+                }
+            }
+
+            catch (Exception exp)
+            {
+                throw (exp);
+            }
+
+            return oEmpresaVM;
+        }
     }
 }

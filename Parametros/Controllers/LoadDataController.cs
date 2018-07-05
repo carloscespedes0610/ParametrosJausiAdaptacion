@@ -2,7 +2,7 @@
 using Parametros.Models.DAC;
 using System.Web.Mvc;
 
-namespace Seguridad.Controllers
+namespace Parametros.Controllers
 {
     public static class LoadDataController
     {

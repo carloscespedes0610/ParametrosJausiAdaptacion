@@ -9,7 +9,8 @@ namespace Parametros.Models.DAC
         private static SqlConnection moConnection;
 
         private static long mlngModuloId;
-        private static long mlngAplicacionId;
+        private static long mlngAplicacionId = 1;
+        private static long mlngAutorizaItemId = 1;
         private static string mstrAplicacionDes;
         private static long mlngAutorizaId;
 
@@ -58,6 +59,19 @@ namespace Parametros.Models.DAC
             set
             {
                 mlngModuloId = value;
+            }
+        }
+
+        public static long AutorizaItemId
+        {
+            get
+            {
+                return mlngAutorizaItemId;
+            }
+
+            set
+            {
+                mlngAutorizaItemId = value;
             }
         }
 
@@ -191,8 +205,6 @@ namespace Parametros.Models.DAC
             }
         }
 
-       
-
         public static void Init(string strDataSource, string strInitialCatalog, string strUsuarioCod, string mstrUsuarioPass)
         {
             mstrConnectString = "Data Source=" + strDataSource + "; Initial Catalog=" + strInitialCatalog +
@@ -224,16 +236,20 @@ namespace Parametros.Models.DAC
             return returnValue;
         }
 
-       
-
     }
 
     static class ConstEstado
     {
-        public const long Activo = 1;
         public const long Inactivo = 2;
-       
+        public const long Activo = 1;
     }
+
+    public enum cFecha
+    {
+        Menor,
+        Igual,
+        Mayor
+    };
 
     static class TipoCorrelativo
     {
@@ -241,10 +257,5 @@ namespace Parametros.Models.DAC
         public const long Periodo = 2;
     }
 
-    public enum cFecha
-    {
-         Menor,
-         Igual,
-        Mayor
-    };
+
 }

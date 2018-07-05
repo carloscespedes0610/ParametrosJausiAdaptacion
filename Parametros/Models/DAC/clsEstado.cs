@@ -1,83 +1,14 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.Data;
+using Parametros.Models.DAC;
+using Parametros.Models.VM;
 
-namespace Parametros.Models.DAC
+namespace Contabilidad.Models.DAC
 {
     public class clsEstado : clsBase, IDisposable
     {
-        private long mlngEstadoId;
-        private string mstrEstadoCod;
-        private string mstrEstadoDes;
-        private long mlngAplicacionId;
-
-        //******************************************************
-        // Private Data To Match the Table Definition
-        //******************************************************
-        public long EstadoId
-        {
-            get
-            {
-                return mlngEstadoId;
-            }
-
-            set
-            {
-                mlngEstadoId = value;
-            }
-        }
-
-        public string EstadoCod
-        {
-            get
-            {
-                return mstrEstadoCod;
-            }
-
-            set
-            {
-                mstrEstadoCod = value;
-            }
-        }
-
-        public string EstadoDes
-        {
-            get
-            {
-                return mstrEstadoDes;
-            }
-
-            set
-            {
-                mstrEstadoDes = value;
-            }
-        }
-
-        public long AplicacionId
-        {
-            get
-            {
-                return mlngAplicacionId;
-            }
-
-            set
-            {
-                mlngAplicacionId = value;
-            }
-        }
-
-        public long Id
-        {
-            get
-            {
-                return mlngId;
-            }
-
-            set
-            {
-                mlngId = value;
-            }
-        }
+        public clsEstadoVM VM;
 
         //******************************************************
         //* The following enumerations will change for each
@@ -289,84 +220,107 @@ namespace Parametros.Models.DAC
 
         public void PropertyInit()
         {
-            mlngEstadoId = 0;
-            mstrEstadoCod = "";
-            mstrEstadoDes = "";
-            mlngAplicacionId = 0;
+            VM = new clsEstadoVM();
+            VM.EstadoId = 0;
+            VM.EstadoCod = "";
+            VM.EstadoDes = "";
+            VM.AplicacionId = 0;
+        }
+
+        protected override void SetPrimaryKey()
+        {
+            VM.EstadoId = mlngId;
         }
 
         protected override void SelectParameter()
         {
-            Array.Resize(ref moParameters, 3);
-            moParameters[0] = new SqlParameter("@SelectFilter", mintSelectFilter);
-            moParameters[1] = new SqlParameter("@WhereFilter", mintWhereFilter);
-            moParameters[2] = new SqlParameter("@OrderByFilter", mintOrderByFilter);
+            string strSQL = null;
+
+            mstrStoreProcName = "parEstadoSelect";
 
             switch (mintSelectFilter)
             {
                 case SelectFilters.All:
-                    mstrStoreProcName = "parEstadoSelect";
-                    break;
-
-                case SelectFilters.RowCount:
-                    mstrStoreProcName = "parEstadoSelect";
+                    strSQL = " SELECT  " +
+                             "    parEstado.EstadoId, " +
+                             "    parEstado.EstadoCod, " +
+                             "    parEstado.EstadoDes, " +
+                             "    parEstado.AplicacionId " +
+                             " FROM  parEstado ";
                     break;
 
                 case SelectFilters.ListBox:
-                    mstrStoreProcName = "parEstadoSelect";
+                    strSQL = " SELECT  " +
+                             "    parEstado.EstadoId, " +
+                             "    parEstado.EstadoCod, " +
+                             "    parEstado.EstadoDes " +
+                             " FROM  parEstado ";
                     break;
 
                 case SelectFilters.Grid:
-                    mstrStoreProcName = "parEstadoSelect";
+                    strSQL = " SELECT  " +
+                             "    parEstado.EstadoId, " +
+                             "    parEstado.EstadoCod, " +
+                             "    parEstado.EstadoDes, " +
+                             "    parEstado.AplicacionId " +
+                             "    segAplicacion.AplicacionDes " +
+                             " FROM  parEstado " +
+                             " LEFT JOIN segAplicacion ON parEstado.AplicacionId = segAplicacion.AplicacionId	";
+
                     break;
 
                 case SelectFilters.GridCheck:
                     break;
             }
 
-            WhereParameter();
+            strSQL += WhereFilterGet() + OrderByFilterGet();
 
-            //Call OrderByParameter()
+            Array.Resize(ref moParameters, 1);
+            moParameters[0] = new SqlParameter("@SQL", strSQL);
         }
 
-        private void WhereParameter()
+        private string WhereFilterGet()
         {
+            string strSQL = null;
+
             switch (mintWhereFilter)
             {
                 case WhereFilters.PrimaryKey:
-                    Array.Resize(ref moParameters, moParameters.Length + 2);
-                    moParameters[3] = new SqlParameter("@EstadoId", mlngEstadoId);
-                    moParameters[4] = new SqlParameter("@AplicacionId", Convert.ToInt32(0));
-                    break;
-
-                case WhereFilters.EstadoDes:
-                    break;
-                //strSQL = " WHERE  parEstado.EstadoDes = " & StringToField(mstrEstadoDes)
-
-                case WhereFilters.Grid:
-                    Array.Resize(ref moParameters, moParameters.Length + 2);
-                    moParameters[3] = new SqlParameter("@EstadoId", Convert.ToInt32(0));
-                    moParameters[4] = new SqlParameter("@AplicacionId", Convert.ToInt32(0));
-                    break;
-
-                case WhereFilters.EstadoCod:
-                    break;
-
-                case WhereFilters.GridCheck:
-                    break;
-
-                case WhereFilters.GridEstadoId:
-                    Array.Resize(ref moParameters, moParameters.Length + 2);
-                    moParameters[3] = new SqlParameter("@EstadoId", mlngEstadoId);
-                    moParameters[4] = new SqlParameter("@AplicacionId", Convert.ToInt32(0));
+                    strSQL = " WHERE EstadoId = " + SysData.NumberToField(VM.EstadoId);
                     break;
 
                 case WhereFilters.AplicacionId:
-                    Array.Resize(ref moParameters, moParameters.Length + 2);
-                    moParameters[3] = new SqlParameter("@EstadoId", Convert.ToInt32(0));
-                    moParameters[4] = new SqlParameter("@AplicacionId", mlngAplicacionId);
+                    strSQL = " WHERE parEstado.AplicacionId = " + SysData.NumberToField(VM.AplicacionId);
+                    break;
+
+                case WhereFilters.Grid:
+                    break;
+
+            }
+
+            return strSQL;
+        }
+
+        private string OrderByFilterGet()
+        {
+            string strSQL = null;
+
+            switch (mintOrderByFilter)
+            {
+                case OrderByFilters.EstadoId:
+                    strSQL = " ORDER BY parEstado.EstadoId ";
+                    break;
+
+                case OrderByFilters.Grid:
+                    strSQL = " ORDER BY parEstado.EstadoDes";
+                    break;
+
+                case OrderByFilters.EstadoDes:
+                    strSQL = " ORDER BY parEstado.EstadoDes DESC ";
                     break;
             }
+
+            return strSQL;
         }
 
         protected override void InsertParameter()
@@ -378,9 +332,9 @@ namespace Parametros.Models.DAC
                     moParameters = new SqlParameter[5] {
                         new SqlParameter("@InsertFilter", mintInsertFilter),
                         new SqlParameter("@Id", SqlDbType.Int),
-                        new SqlParameter("@EstadoCod", mstrEstadoCod),
-                        new SqlParameter("@EstadoDes", mstrEstadoDes),
-                        new SqlParameter("@AplicacionId", mlngAplicacionId)};
+                        new SqlParameter(clsEstadoVM._EstadoCod, VM.EstadoCod),
+                        new SqlParameter(clsEstadoVM._EstadoDes, VM.EstadoDes),
+                        new SqlParameter(clsEstadoVM._AplicacionId, VM.AplicacionId)};
                     moParameters[1].Direction = ParameterDirection.Output;
                     break;
             }
@@ -394,10 +348,10 @@ namespace Parametros.Models.DAC
                     mstrStoreProcName = "parEstadoUpdate";
                     moParameters = new SqlParameter[5] {
                         new SqlParameter("@UpdateFilter", mintUpdateFilter),
-                        new SqlParameter("@EstadoId", mlngEstadoId),
-                        new SqlParameter("@EstadoCod", mstrEstadoCod),
-                        new SqlParameter("@EstadoDes", mstrEstadoDes),
-                        new SqlParameter("@AplicacionId", mlngAplicacionId)};
+                        new SqlParameter(clsEstadoVM._EstadoId, VM.EstadoId),
+                        new SqlParameter(clsEstadoVM._EstadoCod, VM.EstadoCod),
+                        new SqlParameter(clsEstadoVM._EstadoDes, VM.EstadoDes),
+                        new SqlParameter(clsEstadoVM._AplicacionId, VM.AplicacionId)};
                     break;
             }
         }
@@ -410,7 +364,7 @@ namespace Parametros.Models.DAC
                     mstrStoreProcName = "parEstadoDelete";
                     moParameters = new SqlParameter[2] {
                         new SqlParameter("@DeleteFilter", mintDeleteFilter),
-                        new SqlParameter("@EstadoId", mlngEstadoId)};
+                        new SqlParameter(clsEstadoVM._EstadoId, VM.EstadoId)};
                     break;
             }
         }
@@ -424,16 +378,16 @@ namespace Parametros.Models.DAC
                 switch (mintSelectFilter)
                 {
                     case SelectFilters.All:
-                        mlngEstadoId = SysData.ToLong(oDataRow["EstadoId"]);
-                        mstrEstadoCod = SysData.ToStr(oDataRow["EstadoCod"]);
-                        mstrEstadoDes = SysData.ToStr(oDataRow["EstadoDes"]);
-                        mlngAplicacionId = SysData.ToLong(oDataRow["AplicacionId"]);
+                        VM.EstadoId = SysData.ToLong(oDataRow[clsEstadoVM._EstadoId]);
+                        VM.EstadoCod = SysData.ToStr(oDataRow[clsEstadoVM._EstadoCod]);
+                        VM.EstadoDes = SysData.ToStr(oDataRow[clsEstadoVM._EstadoDes]);
+                        VM.AplicacionId = SysData.ToLong(oDataRow[clsEstadoVM._AplicacionId]);
                         break;
 
                     case SelectFilters.ListBox:
-                        mlngEstadoId = SysData.ToLong(oDataRow["EstadoId"]);
-                        mstrEstadoCod = SysData.ToStr(oDataRow["EstadoCod"]);
-                        mstrEstadoDes = SysData.ToStr(oDataRow["EstadoDes"]);
+                        VM.EstadoId = SysData.ToLong(oDataRow[clsEstadoVM._EstadoId]);
+                        VM.EstadoCod = SysData.ToStr(oDataRow[clsEstadoVM._EstadoCod]);
+                        VM.EstadoDes = SysData.ToStr(oDataRow[clsEstadoVM._EstadoDes]);
                         break;
                 }
             }
@@ -449,15 +403,13 @@ namespace Parametros.Models.DAC
             bool returnValue = false;
             string strMsg = string.Empty;
 
-            if (mstrEstadoCod.Length == 0)
-            {
-                strMsg += "Ingrese el Código <br />";
-            }
+            if (VM.EstadoId <= 0) { strMsg += "El Estado ID es Requerido" + Environment.NewLine; }
 
-            if (mstrEstadoDes.Length == 0)
-            {
-                strMsg += "Ingrese el Estado <br />";
-            }
+            if (VM.EstadoCod.Length <= 0) { strMsg += "El Código es Requerido" + Environment.NewLine; }
+
+            if (VM.EstadoDes.Length <= 0) { strMsg += "La Descripcinón es Requerido" + Environment.NewLine; }
+
+            if (VM.AplicacionId <= 0) { strMsg += "El ID de la Aplicación es Requerido" + Environment.NewLine; }
 
             if (strMsg.Trim() != string.Empty)
             {

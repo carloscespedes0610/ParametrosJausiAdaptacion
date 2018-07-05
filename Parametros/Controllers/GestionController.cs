@@ -53,7 +53,8 @@ namespace Parametros.Controllers
                     return RedirectToAction("httpErrorMsg", "Error", new { MessageErr = "Índice no encontrado" });
                 }
 
-                ViewBag.EstadoId = ComboBox.EstadoList();
+                // Comentado Carlos: ya no necesita ya pide la vista directamente al controlador
+                //ViewBag.EstadoId = ComboBox.EstadoList();
                 return View(oGestionVM);
             }
 

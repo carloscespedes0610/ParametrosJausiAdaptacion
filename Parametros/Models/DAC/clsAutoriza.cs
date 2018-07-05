@@ -1,97 +1,13 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.Data;
+using Parametros.Models.VM;
 
 namespace Parametros.Models.DAC
 {
     public class clsAutoriza : clsBase, IDisposable
     {
-        private long mlngAutorizaId;
-        private long mlngModuloId;
-        private long mlngTipoUsuarioId;
-        private string mstrTablaDes;
-        private long mlngTablaId;
-
-        //******************************************************
-        // Private Data To Match the Table Definition
-        //******************************************************
-        public long AutorizaId
-        {
-            get
-            {
-                return mlngAutorizaId;
-            }
-
-            set
-            {
-                mlngAutorizaId = value;
-            }
-        }
-
-        public long moduloId
-        {
-            get
-            {
-                return mlngModuloId;
-            }
-
-            set
-            {
-                mlngModuloId = value;
-            }
-        }
-
-        public long TipoUsuarioId
-        {
-            get
-            {
-                return mlngTipoUsuarioId;
-            }
-
-            set
-            {
-                mlngTipoUsuarioId = value;
-            }
-        }
-
-        public string TablaDes
-        {
-            get
-            {
-                return mstrTablaDes;
-            }
-
-            set
-            {
-                mstrTablaDes = value;
-            }
-        }
-
-        public long TablaId
-        {
-            get
-            {
-                return mlngTablaId;
-            }
-
-            set
-            {
-                mlngTablaId = value;
-            }
-        }
-
-        public long Id
-        {
-            get
-            {
-                return mlngId;
-            }
-
-            set
-            {
-                mlngId = value;
-            }
-        }
+        public clsAutorizaVM VM;
 
         //******************************************************
         //* The following enumerations will change for each
@@ -110,19 +26,18 @@ namespace Parametros.Models.DAC
         {
             None = 0,
             PrimaryKey = 1,
-            TablaDes = 2,
+            AutorizaDes = 2,
             Grid = 3,
-            GridCheck = 4,
-            //AutorizaCod = 5,
-            GridAutorizaId = 6,
-            TipoUsuarioIdTablaDes = 7
+            GridAutorizaId = 4,
+            TipoUsuarioIdAppId = 5,
+            AutorizaItemSel = 6
         }
 
         public enum OrderByFilters : byte
         {
             None = 0,
             AutorizaId = 1,
-            TablaDes = 2,
+            AutorizaDes = 2,
             Grid = 3,
             GridCheck = 4
         }
@@ -139,7 +54,8 @@ namespace Parametros.Models.DAC
 
         public enum DeleteFilters : byte
         {
-            All = 0
+            All = 0,
+            TipoUsuarioAutorizaSel = 1
         }
 
         public enum RowCountFilters : byte
@@ -303,90 +219,123 @@ namespace Parametros.Models.DAC
 
         public void PropertyInit()
         {
-            mlngAutorizaId = 0;
-            mlngModuloId = 0;
-            mlngTipoUsuarioId = 0;
-            mstrTablaDes = "";
-            mlngTablaId = 0;
+            VM = new clsAutorizaVM();
+            VM.AutorizaId = 0;
+            VM.TipoUsuarioId = 0;
+            VM.AutorizaDes = "";
+            VM.RegistroId = 0;
+            VM.AutorizaItemId = 0;
+            VM.ModuloId = 0;
+        }
+
+        protected override void SetPrimaryKey()
+        {
+            VM.AutorizaId = mlngId;
         }
 
         protected override void SelectParameter()
         {
-            Array.Resize(ref moParameters, 3);
-            moParameters[0] = new SqlParameter("@SelectFilter", mintSelectFilter);
-            moParameters[1] = new SqlParameter("@WhereFilter", mintWhereFilter);
-            moParameters[2] = new SqlParameter("@OrderByFilter", mintOrderByFilter);
+            string strSQL = null;
+
+            mstrStoreProcName = "segAutorizaSelect";
 
             switch (mintSelectFilter)
             {
                 case SelectFilters.All:
-                    mstrStoreProcName = "segAutorizaSelect";
-                    break;
-
-                case SelectFilters.RowCount:
-                    mstrStoreProcName = "segAutorizaSelect";
+                    strSQL = " SELECT  " +
+                            "    segAutoriza.AutorizaId, " +
+                            "    segAutoriza.TipoUsuarioId, " +
+                            "    segAutoriza.ModuloId, " +
+                            "    segAutoriza.AutorizaDes, " +
+                            "    segAutoriza.RegistroId, " +
+                            "    segAutoriza.AutorizaItemId " +
+                            " FROM segAutoriza ";
                     break;
 
                 case SelectFilters.ListBox:
-                    mstrStoreProcName = "segAutorizaSelect";
+                    strSQL = " SELECT  " +
+                            "    segAutoriza.AutorizaId, " +
+                            "    segAutoriza.ModuloId, " +
+                            "    segAutoriza.AutorizaDes " +
+                            " FROM segAutoriza ";
                     break;
 
                 case SelectFilters.Grid:
-                    mstrStoreProcName = "segAutorizaSelect";
+                    strSQL = " SELECT  " +
+                            "    segAutoriza.AutorizaId, " +
+                            "    segTipoUsuario.TipoUsuarioId, " +
+                            "    segTipoUsuario.TipoUsuarioDes, " +
+                            "    segModulo.ModuloId, " +
+                            "    segModulo.ModuloDes, " +
+                            "    segAutoriza.AutorizaDes, " +
+                            "    segAutoriza.RegistroId, " +
+                            "    segAutorizaItem.AutorizaItemId, " +
+                            "    segAutorizaItem.AutorizaItemDes " +
+                            " FROM	segAutoriza " +
+                            " LEFT JOIN	segTipoUsuario ON segAutoriza.TipoUsuarioId = segTipoUsuario.TipoUsuarioId	" +
+                            " LEFT JOIN	segModulo ON segAutoriza.ModuloId = segModulo.ModuloId	" +
+                            " LEFT JOIN	segAutorizaItem  ON segAutoriza.ModuloId = segAutorizaItem.ModuloId	";
                     break;
 
                 case SelectFilters.GridCheck:
                     break;
             }
 
-            WhereParameter();
+            strSQL += WhereFilterGet() + OrderByFilterGet();
 
-            //Call OrderByParameter()
+            Array.Resize(ref moParameters, 1);
+            moParameters[0] = new SqlParameter("@SQL", strSQL);
         }
 
-        private void WhereParameter()
+        private string WhereFilterGet()
         {
+            string strSQL = null;
+
             switch (mintWhereFilter)
             {
                 case WhereFilters.PrimaryKey:
-                    Array.Resize(ref moParameters, moParameters.Length + 4);
-                    moParameters[3] = new SqlParameter("@AutorizaId", mlngAutorizaId);
-                    moParameters[4] = new SqlParameter("@TipoUsuarioId", Convert.ToInt32(0));
-                    moParameters[5] = new SqlParameter("@TablaDes", "");
-                    moParameters[6] = new SqlParameter("@TablaId", Convert.ToInt32(0));
+                    strSQL = " WHERE AutorizaId = " + SysData.NumberToField(VM.AutorizaId);
                     break;
 
-                case WhereFilters.TablaDes:
+                case WhereFilters.TipoUsuarioIdAppId:
+                    strSQL = " WHERE segAutoriza.TipoUsuarioId = " + SysData.NumberToField(VM.TipoUsuarioId) +
+                             " AND segAutoriza.AutorizaItemId = " + SysData.NumberToField(VM.AutorizaItemId) +
+                             " AND segAutoriza.RegistroId = " + SysData.NumberToField(VM.RegistroId);
                     break;
-                //strSQL = " WHERE  segAutoriza.TablaDes = " & StringToField(mstrTablaDes)
 
                 case WhereFilters.Grid:
-                    Array.Resize(ref moParameters, moParameters.Length + 4);
-                    moParameters[3] = new SqlParameter("@AutorizaId", Convert.ToInt32(0));
-                    moParameters[4] = new SqlParameter("@TipoUsuarioId", Convert.ToInt32(0));
-                    moParameters[5] = new SqlParameter("@TablaDes", "");
-                    moParameters[6] = new SqlParameter("@TablaId", Convert.ToInt32(0));
                     break;
 
-                case WhereFilters.GridCheck:
-                    break;
-
-                case WhereFilters.GridAutorizaId:
-                    Array.Resize(ref moParameters, moParameters.Length + 4);
-                    moParameters[3] = new SqlParameter("@AutorizaId", mlngAutorizaId);
-                    moParameters[4] = new SqlParameter("@TipoUsuarioId", Convert.ToInt32(0));
-                    moParameters[5] = new SqlParameter("@TablaDes", "");
-                    moParameters[6] = new SqlParameter("@TablaId", Convert.ToInt32(0));
-                    break;
-
-                case WhereFilters.TipoUsuarioIdTablaDes:
-                    Array.Resize(ref moParameters, moParameters.Length + 4);
-                    moParameters[3] = new SqlParameter("@AutorizaId", Convert.ToInt32(0));
-                    moParameters[4] = new SqlParameter("@TipoUsuarioId", mlngTipoUsuarioId);
-                    moParameters[5] = new SqlParameter("@TablaDes", mstrTablaDes);
-                    moParameters[6] = new SqlParameter("@TablaId", mlngTablaId);
+                case WhereFilters.AutorizaItemSel:
+                    strSQL = " WHERE segAutoriza.TipoUsuarioId = " + SysData.NumberToField(VM.TipoUsuarioId) +
+                             " AND segAutoriza.AutorizaItemId = " + SysData.NumberToField(VM.AutorizaItemId);
                     break;
             }
+
+            return strSQL;
+        }
+
+        private string OrderByFilterGet()
+        {
+            string strSQL = null;
+
+            switch (mintOrderByFilter)
+            {
+                case OrderByFilters.AutorizaId:
+                    break;
+
+                case OrderByFilters.AutorizaDes:
+                    break;
+
+                case OrderByFilters.Grid:
+                    strSQL = " ORDER BY segAutorizaItem.AutorizaItemDes, segTipoUsuario.TipoUsuarioDes ";
+                    break;
+
+                case OrderByFilters.GridCheck:
+                    break;
+            }
+
+            return strSQL;
         }
 
         protected override void InsertParameter()
@@ -395,13 +344,14 @@ namespace Parametros.Models.DAC
             {
                 case InsertFilters.All:
                     mstrStoreProcName = "segAutorizaInsert";
-                    moParameters = new SqlParameter[6] {
+                    moParameters = new SqlParameter[7] {
                         new SqlParameter("@InsertFilter", mintInsertFilter),
                         new SqlParameter("@Id", SqlDbType.Int),
-                        new SqlParameter("@ModuloId", mlngModuloId),
-                        new SqlParameter("@TipoUsuarioId", mlngTipoUsuarioId),
-                        new SqlParameter("@TablaDes", mstrTablaDes),
-                        new SqlParameter("@TablaId", mlngTablaId)};
+                        new SqlParameter(clsAutorizaVM._TipoUsuarioId,VM.TipoUsuarioId),
+                        new SqlParameter(clsAutorizaVM._AutorizaDes,VM.AutorizaDes),
+                        new SqlParameter(clsAutorizaVM._RegistroId,VM.RegistroId),
+                        new SqlParameter(clsAutorizaVM._AutorizaItemId,VM.AutorizaItemId),
+                        new SqlParameter(clsAutorizaVM._ModuloId,VM.ModuloId) };
                     moParameters[1].Direction = ParameterDirection.Output;
                     break;
             }
@@ -413,13 +363,14 @@ namespace Parametros.Models.DAC
             {
                 case UpdateFilters.All:
                     mstrStoreProcName = "segAutorizaUpdate";
-                    moParameters = new SqlParameter[6] {
+                    moParameters = new SqlParameter[7] {
                         new SqlParameter("@UpdateFilter", mintUpdateFilter),
-                        new SqlParameter("@AutorizaId", mlngAutorizaId),
-                        new SqlParameter("@ModuloId", mlngModuloId),
-                        new SqlParameter("@TipoUsuarioId", mlngTipoUsuarioId),
-                        new SqlParameter("@TablaDes", mstrTablaDes),
-                        new SqlParameter("@TablaId", mlngTablaId)};
+                        new SqlParameter(clsAutorizaVM._AutorizaId,VM.AutorizaId),
+                        new SqlParameter(clsAutorizaVM._TipoUsuarioId,VM.TipoUsuarioId),
+                        new SqlParameter(clsAutorizaVM._AutorizaDes,VM.AutorizaDes),
+                        new SqlParameter(clsAutorizaVM._RegistroId,VM.RegistroId),
+                        new SqlParameter(clsAutorizaVM._AutorizaItemId,VM.AutorizaItemId),
+                        new SqlParameter(clsAutorizaVM._ModuloId,VM.ModuloId)};
                     break;
             }
         }
@@ -430,9 +381,26 @@ namespace Parametros.Models.DAC
             {
                 case DeleteFilters.All:
                     mstrStoreProcName = "segAutorizaDelete";
-                    moParameters = new SqlParameter[2] {
+                    moParameters = new SqlParameter[7] {
                         new SqlParameter("@DeleteFilter", mintDeleteFilter),
-                        new SqlParameter("@AutorizaId", mlngAutorizaId)};
+                        new SqlParameter(clsAutorizaVM._AutorizaId,VM.AutorizaId),
+                        new SqlParameter(clsAutorizaVM._TipoUsuarioId,VM.TipoUsuarioId),
+                        new SqlParameter(clsAutorizaVM._AutorizaDes,VM.AutorizaDes),
+                        new SqlParameter(clsAutorizaVM._RegistroId,VM.RegistroId),
+                        new SqlParameter(clsAutorizaVM._AutorizaItemId,VM.AutorizaItemId),
+                        new SqlParameter(clsAutorizaVM._ModuloId,VM.ModuloId)};
+                    break;
+
+                case DeleteFilters.TipoUsuarioAutorizaSel:
+                    mstrStoreProcName = "segAutorizaDelete";
+                    moParameters = new SqlParameter[7] {
+                        new SqlParameter("@DeleteFilter", mintDeleteFilter),
+                        new SqlParameter(clsAutorizaVM._AutorizaId,VM.AutorizaId),
+                        new SqlParameter(clsAutorizaVM._TipoUsuarioId,VM.TipoUsuarioId),
+                        new SqlParameter(clsAutorizaVM._AutorizaDes,VM.AutorizaDes),
+                        new SqlParameter(clsAutorizaVM._RegistroId,VM.RegistroId),
+                        new SqlParameter(clsAutorizaVM._AutorizaItemId,VM.AutorizaItemId),
+                        new SqlParameter(clsAutorizaVM._ModuloId,VM.ModuloId)};
                     break;
             }
         }
@@ -446,15 +414,17 @@ namespace Parametros.Models.DAC
                 switch (mintSelectFilter)
                 {
                     case SelectFilters.All:
-                        mlngAutorizaId = SysData.ToLong(oDataRow["AutorizaId"]);
-                        mlngModuloId = SysData.ToLong(oDataRow["ModuloId"]);
-                        mlngTipoUsuarioId = SysData.ToLong(oDataRow["TipoUsuarioId"]);
-                        mstrTablaDes = SysData.ToStr(oDataRow["TablaDes"]);
-                        mlngTablaId = SysData.ToLong(oDataRow["TablaId"]);
+                        VM.AutorizaId = SysData.ToLong(oDataRow[clsAutorizaVM._AutorizaId]);
+                        VM.TipoUsuarioId = SysData.ToLong(oDataRow[clsAutorizaVM._TipoUsuarioId]);
+                        VM.AutorizaDes = SysData.ToStr(oDataRow[clsAutorizaVM._AutorizaDes]);
+                        VM.RegistroId = SysData.ToLong(oDataRow[clsAutorizaVM._RegistroId]);
+                        VM.AutorizaItemId = SysData.ToLong(oDataRow[clsAutorizaVM._AutorizaItemId]);
+                        VM.ModuloId = SysData.ToLong(oDataRow[clsAutorizaVM._ModuloId]);
                         break;
 
                     case SelectFilters.ListBox:
-                        mlngAutorizaId = SysData.ToLong(oDataRow["AutorizaId"]);
+                        VM.AutorizaId = SysData.ToLong(oDataRow[clsAutorizaVM._AutorizaId]);
+                        VM.AutorizaDes = SysData.ToStr(oDataRow[clsAutorizaVM._AutorizaDes]);
                         break;
                 }
             }
@@ -470,10 +440,11 @@ namespace Parametros.Models.DAC
             bool returnValue = false;
             string strMsg = string.Empty;
 
-            //if (mstrTablaDes.Length == 0)
-            //{
-            //    strMsg += "Ingrese la Aplicación <br />";
-            //}
+            if (VM.TipoUsuarioId <= 0) { strMsg += "El Tipo de Usuario es Requerido" + Environment.NewLine; }
+
+            if (VM.ModuloId <= 0) { strMsg += "El Modulo es Requerido" + Environment.NewLine; }
+
+            if (VM.AutorizaItemId <= 0) { strMsg += "El Autoriza Item es Requerido" + Environment.NewLine; }
 
             if (strMsg.Trim() != string.Empty)
             {

@@ -1,111 +1,14 @@
-﻿using System;
-using System.Data.SqlClient;
+﻿using Parametros.Models.DAC;
+using Parametros.Models.VM;
+using System;
 using System.Data;
+using System.Data.SqlClient;
 
 namespace Parametros.Models.DAC
 {
     public class clsAplicacion : clsBase, IDisposable
     {
-        private long mlngAplicacionId;
-        private string mstrAplicacionCod;
-        private string mstrAplicacionDes;
-        private string mstrAplicacionEsp;
-        private long mlngModuloId;
-        private long mlngEstadoId;
-
-        //******************************************************
-        // Private Data To Match the Table Definition
-        //******************************************************
-        public long AplicacionId
-        {
-            get
-            {
-                return mlngAplicacionId;
-            }
-
-            set
-            {
-                mlngAplicacionId = value;
-            }
-        }
-
-        public string AplicacionCod
-        {
-            get
-            {
-                return mstrAplicacionCod;
-            }
-
-            set
-            {
-                mstrAplicacionCod = value;
-            }
-        }
-
-        public string AplicacionDes
-        {
-            get
-            {
-                return mstrAplicacionDes;
-            }
-
-            set
-            {
-                mstrAplicacionDes = value;
-            }
-        }
-
-        public string AplicacionEsp
-        {
-            get
-            {
-                return mstrAplicacionEsp;
-            }
-
-            set
-            {
-                mstrAplicacionEsp = value;
-            }
-        }
-
-        public long ModuloId
-        {
-            get
-            {
-                return mlngModuloId;
-            }
-
-            set
-            {
-                mlngModuloId = value;
-            }
-        }
-
-        public long EstadoId
-        {
-            get
-            {
-                return mlngEstadoId;
-            }
-
-            set
-            {
-                mlngEstadoId = value;
-            }
-        }
-
-        public long Id
-        {
-            get
-            {
-                return mlngId;
-            }
-
-            set
-            {
-                mlngId = value;
-            }
-        }
+        public clsAplicacionVM VM;
 
         //******************************************************
         //* The following enumerations will change for each
@@ -316,76 +219,114 @@ namespace Parametros.Models.DAC
 
         public void PropertyInit()
         {
-            mlngAplicacionId = 0;
-            mstrAplicacionCod = "";
-            mstrAplicacionDes = "";
-            mstrAplicacionEsp = "";
-            mlngModuloId = 0;
-            mlngEstadoId = 0;
+            VM = new clsAplicacionVM();
+            VM.AplicacionId = 0;
+            VM.AplicacionCod = "";
+            VM.AplicacionDes = "";
+            VM.AplicacionEsp = "";
+            VM.ModuloId = 0;
+            VM.EstadoId = 0;
+        }
+
+        protected override void SetPrimaryKey()
+        {
+            VM.AplicacionId = mlngId;
         }
 
         protected override void SelectParameter()
         {
-            Array.Resize(ref moParameters, 3);
-            moParameters[0] = new SqlParameter("@SelectFilter", mintSelectFilter);
-            moParameters[1] = new SqlParameter("@WhereFilter", mintWhereFilter);
-            moParameters[2] = new SqlParameter("@OrderByFilter", mintOrderByFilter);
+            string strSQL = null;
+
+            mstrStoreProcName = "segAplicacionSelect";
 
             switch (mintSelectFilter)
             {
                 case SelectFilters.All:
-                    mstrStoreProcName = "segAplicacionSelect";
-                    break;
-
-                case SelectFilters.RowCount:
-                    mstrStoreProcName = "segAplicacionSelect";
-                    break;
-
-                case SelectFilters.ListBox:
-                    mstrStoreProcName = "segAplicacionSelect";
+                    strSQL = " SELECT  " +
+                             "    segAplicacion.AplicacionId, " +
+                             "    segAplicacion.AplicacionCod, " +
+                             "    segAplicacion.AplicacionDes, " +
+                             "    segAplicacion.AplicacionEsp, " +
+                             "    segAplicacion.ModuloId, " +
+                             "    segAplicacion.EstadoId " +
+                             " FROM  segAplicacion ";
                     break;
 
                 case SelectFilters.Grid:
-                    mstrStoreProcName = "segAplicacionSelect";
+                    strSQL = " SELECT  " +
+                             "    segAplicacion.AplicacionId, " +
+                             "    segAplicacion.AplicacionCod, " +
+                             "    segAplicacion.AplicacionDes, " +
+                             "    segAplicacion.AplicacionEsp, " +
+                             "    segModulo.ModuloId,  " +
+                             "    segModulo.ModuloDes, " +
+                             "    parEstado.EstadoId,  " +
+                             "    parEstado.EstadoDes " +
+                             " FROM segAplicacion " +
+                             " LEFT JOIN segModulo ON segAplicacion.ModuloId = segModulo.ModuloId " +
+                             " LEFT JOIN parEstado ON segAplicacion.EstadoId = parEstado.EstadoId ";
+                    break;
+
+                case SelectFilters.ListBox:
+                    strSQL = " SELECT  " +
+                             "    segAplicacion.AplicacionId, " +
+                             "    segAplicacion.AplicacionCod, " +
+                             "    segAplicacion.AplicacionDes " +
+                             " FROM segAplicacion ";
+
                     break;
 
                 case SelectFilters.GridCheck:
                     break;
             }
 
-            WhereParameter();
+            strSQL += WhereFilterGet() + OrderByFilterGet();
 
-            //Call OrderByParameter()
+            Array.Resize(ref moParameters, 1);
+            moParameters[0] = new SqlParameter("@SQL", strSQL);
         }
 
-        private void WhereParameter()
+        private string WhereFilterGet()
         {
+            string strSQL = null;
+
             switch (mintWhereFilter)
             {
                 case WhereFilters.PrimaryKey:
-                    Array.Resize(ref moParameters, moParameters.Length + 3);
-                    moParameters[3] = new SqlParameter("@AplicacionId", mlngAplicacionId);
-                    moParameters[4] = new SqlParameter("@ModuloId", Convert.ToInt32(0));
-                    moParameters[5] = new SqlParameter("@EstadoId", Convert.ToInt32(0));
-                    break;
-
-                case WhereFilters.AplicacionDes:
-                    break;
-                //strSQL = " WHERE  segAplicacion.AplicacionDes = " & StringToField(mstrAplicacionDes)
-
-                case WhereFilters.Grid:
-                    Array.Resize(ref moParameters, moParameters.Length + 3);
-                    moParameters[3] = new SqlParameter("@AplicacionId", Convert.ToInt32(0));
-                    moParameters[4] = new SqlParameter("@ModuloId", Convert.ToInt32(0));
-                    moParameters[5] = new SqlParameter("@EstadoId", Convert.ToInt32(0));
+                    strSQL = " WHERE segAplicacion.AplicacionId = " + SysData.NumberToField(VM.AplicacionId);
                     break;
 
                 case WhereFilters.AplicacionCod:
+                    strSQL = " WHERE AplicacionCod = " + SysData.StringToField(VM.AplicacionCod);
                     break;
 
-                case WhereFilters.GridCheck:
+                case WhereFilters.Grid:
                     break;
             }
+
+            return strSQL;
+        }
+
+        private string OrderByFilterGet()
+        {
+            string strSQL = null;
+
+            switch (mintOrderByFilter)
+            {
+                case OrderByFilters.AplicacionId:
+                    strSQL = " ORDER BY segAplicacion.AplicacionId ";
+                    break;
+
+                case OrderByFilters.Grid:
+                    strSQL = " ORDER BY segModulo.ModuloDes, segAplicacion.AplicacionDes ";
+                    break;
+
+                case OrderByFilters.AplicacionDes:
+                    strSQL = " ORDER BY segAplicacion.AplicacionDes ";
+                    break;
+            }
+
+            return strSQL;
         }
 
         protected override void InsertParameter()
@@ -397,11 +338,11 @@ namespace Parametros.Models.DAC
                     moParameters = new SqlParameter[7] {
                         new SqlParameter("@InsertFilter", mintInsertFilter),
                         new SqlParameter("@Id", SqlDbType.Int),
-                        new SqlParameter("@AplicacionCod", mstrAplicacionCod),
-                        new SqlParameter("@AplicacionDes", mstrAplicacionDes),
-                        new SqlParameter("@AplicacionEsp", mstrAplicacionEsp),
-                        new SqlParameter("@ModuloId", mlngModuloId),
-                        new SqlParameter("@EstadoId", mlngEstadoId)};
+                        new SqlParameter(clsAplicacionVM._AplicacionCod, VM.AplicacionCod),
+                        new SqlParameter(clsAplicacionVM._AplicacionDes, VM.AplicacionDes),
+                        new SqlParameter(clsAplicacionVM._AplicacionEsp, VM.AplicacionEsp),
+                        new SqlParameter(clsAplicacionVM._ModuloId, VM.ModuloId),
+                        new SqlParameter(clsAplicacionVM._EstadoId, VM.EstadoId)};
                     moParameters[1].Direction = ParameterDirection.Output;
                     break;
             }
@@ -415,12 +356,12 @@ namespace Parametros.Models.DAC
                     mstrStoreProcName = "segAplicacionUpdate";
                     moParameters = new SqlParameter[7] {
                         new SqlParameter("@UpdateFilter", mintUpdateFilter),
-                        new SqlParameter("@AplicacionId", mlngAplicacionId),
-                        new SqlParameter("@AplicacionCod", mstrAplicacionCod),
-                        new SqlParameter("@AplicacionDes", mstrAplicacionDes),
-                        new SqlParameter("@AplicacionEsp", mstrAplicacionEsp),
-                        new SqlParameter("@ModuloId", mlngModuloId),
-                    new SqlParameter("@EstadoId", mlngEstadoId)};
+                        new SqlParameter(clsAplicacionVM._AplicacionId, VM.AplicacionId),
+                        new SqlParameter(clsAplicacionVM._AplicacionCod, VM.AplicacionCod),
+                        new SqlParameter(clsAplicacionVM._AplicacionDes, VM.AplicacionDes),
+                        new SqlParameter(clsAplicacionVM._AplicacionEsp, VM.AplicacionEsp),
+                        new SqlParameter(clsAplicacionVM._ModuloId, VM.ModuloId),
+                        new SqlParameter(clsAplicacionVM._EstadoId, VM.EstadoId)};
                     break;
             }
         }
@@ -433,7 +374,7 @@ namespace Parametros.Models.DAC
                     mstrStoreProcName = "segAplicacionDelete";
                     moParameters = new SqlParameter[2] {
                         new SqlParameter("@DeleteFilter", mintDeleteFilter),
-                        new SqlParameter("@AplicacionId", mlngAplicacionId)};
+                        new SqlParameter(clsAplicacionVM._AplicacionId, VM.AplicacionId)};
                     break;
             }
         }
@@ -447,18 +388,18 @@ namespace Parametros.Models.DAC
                 switch (mintSelectFilter)
                 {
                     case SelectFilters.All:
-                        mlngAplicacionId = SysData.ToLong(oDataRow["AplicacionId"]);
-                        mstrAplicacionCod = SysData.ToStr(oDataRow["AplicacionCod"]);
-                        mstrAplicacionDes = SysData.ToStr(oDataRow["AplicacionDes"]);
-                        mstrAplicacionEsp = SysData.ToStr(oDataRow["AplicacionEsp"]);
-                        mlngModuloId = SysData.ToLong(oDataRow["ModuloId"]);
-                        mlngEstadoId = SysData.ToLong(oDataRow["EstadoId"]);
+                        VM.AplicacionId = SysData.ToLong(oDataRow[clsAplicacionVM._AplicacionId]);
+                        VM.AplicacionCod = SysData.ToStr(oDataRow[clsAplicacionVM._AplicacionCod]);
+                        VM.AplicacionDes = SysData.ToStr(oDataRow[clsAplicacionVM._AplicacionDes]);
+                        VM.AplicacionEsp = SysData.ToStr(oDataRow[clsAplicacionVM._AplicacionEsp]);
+                        VM.ModuloId = SysData.ToLong(oDataRow[clsAplicacionVM._ModuloId]);
+                        VM.EstadoId = SysData.ToLong(oDataRow[clsAplicacionVM._EstadoId]);
                         break;
 
                     case SelectFilters.ListBox:
-                        mlngAplicacionId = SysData.ToLong(oDataRow["AplicacionId"]);
-                        mstrAplicacionCod = SysData.ToStr(oDataRow["AplicacionCod"]);
-                        mstrAplicacionDes = SysData.ToStr(oDataRow["AplicacionDes"]);
+                        VM.AplicacionId = SysData.ToLong(oDataRow[clsAplicacionVM._AplicacionId]);
+                        VM.AplicacionCod = SysData.ToStr(oDataRow[clsAplicacionVM._AplicacionCod]);
+                        VM.AplicacionDes = SysData.ToStr(oDataRow[clsAplicacionVM._AplicacionDes]);
                         break;
                 }
             }
@@ -474,14 +415,14 @@ namespace Parametros.Models.DAC
             bool returnValue = false;
             string strMsg = string.Empty;
 
-            if (mstrAplicacionCod.Length == 0)
+            if (VM.AplicacionCod.Length == 0)
             {
-                strMsg += "Ingrese el Código <br />";
+                strMsg += "Código de la Aplicación es Requerido" + Environment.NewLine;
             }
 
-            if (mstrAplicacionDes.Length == 0)
+            if (VM.AplicacionDes.Length == 0)
             {
-                strMsg += "Ingrese la Aplicación <br />";
+                strMsg += "Descripción de la Aplicación es requerido" + Environment.NewLine;
             }
 
             if (strMsg.Trim() != string.Empty)

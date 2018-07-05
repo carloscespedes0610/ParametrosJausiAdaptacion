@@ -9,7 +9,7 @@ namespace Parametros.Models.VM
         public long UsuarioId { get; set; }
 
         [Display(Name = "Cuenta de Usuario")]
-        [Required(ErrorMessage = "{0} Inválido")]
+        [Required(ErrorMessage = "{0} es Requerido")]
         public string UsuarioCod { get; set; }
 
         [Display(Name = "Usuario")]
@@ -17,6 +17,10 @@ namespace Parametros.Models.VM
 
         [Display(Name = "Tipo Usuario")]
         public long TipoUsuarioId { get; set; }
+
+        [NotMapped]
+        [Display(Name = "Tipo Usuario")]
+        public string TipoUsuarioDes { get; set; }
 
         [Display(Name = "Repositorio")]
         public string UsuarioDocPath { get; set; }
@@ -30,12 +34,25 @@ namespace Parametros.Models.VM
         [Display(Name = "Estado")]
         public long EstadoId { get; set; }
 
+        [NotMapped]
+        [Display(Name = "Estado")]
+        public string EstadoDes { get; set; }
+
         [Display(Name = "Contraseña")]
-        [Required(ErrorMessage = "{0} Inválida")]
+        //[Required(ErrorMessage = "{0} es Requerido")]
         [DataType(DataType.Password)]
         public string UsuarioPass { get; set; }
 
         [NotMapped]
         public long EmpresaId { get; set; }
+
+        public static string _UsuarioId = nameof(UsuarioId);
+        public static string _UsuarioCod = nameof(UsuarioCod);
+        public static string _UsuarioDes = nameof(UsuarioDes);
+        public static string _TipoUsuarioId = nameof(TipoUsuarioId);
+        public static string _UsuarioDocPath = nameof(UsuarioDocPath);
+        public static string _UsuarioFotoPath = nameof(UsuarioFotoPath);
+        public static string _UsuarioMaxSes = nameof(UsuarioMaxSes);
+        public static string _EstadoId = nameof(EstadoId);
     }
 }

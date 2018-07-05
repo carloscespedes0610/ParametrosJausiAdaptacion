@@ -1,4 +1,5 @@
-﻿using Parametros.Models.DAC;
+﻿using Contabilidad.Models.DAC;
+using Parametros.Models.DAC;
 using Parametros.Models.VM;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace Parametros.Models.Modules
                 oEstado.SelectFilter = clsEstado.SelectFilters.ListBox;
                 oEstado.WhereFilter = clsEstado.WhereFilters.AplicacionId;
                 oEstado.OrderByFilter = clsEstado.OrderByFilters.EstadoDes;
-                oEstado.AplicacionId = clsAppInfo.AplicacionId;
+                //oEstado.AplicacionId = clsAppInfo.AplicacionId;
 
                 if (oEstado.Open())
                 {

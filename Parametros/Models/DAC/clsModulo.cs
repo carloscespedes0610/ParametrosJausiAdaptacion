@@ -1,97 +1,13 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.Data;
+using Parametros.Models.VM;
 
 namespace Parametros.Models.DAC
 {
     public class clsModulo : clsBase, IDisposable
     {
-        private long mlngModuloId;
-        private string mstrModuloCod;
-        private string mstrModuloDes;
-        private string mstrModuloEsp;
-        private long mlngEstadoId;
-
-        //******************************************************
-        // Private Data To Match the Table Definition
-        //******************************************************
-        public long ModuloId
-        {
-            get
-            {
-                return mlngModuloId;
-            }
-
-            set
-            {
-                mlngModuloId = value;
-            }
-        }
-
-        public string ModuloCod
-        {
-            get
-            {
-                return mstrModuloCod;
-            }
-
-            set
-            {
-                mstrModuloCod = value;
-            }
-        }
-
-        public string ModuloDes
-        {
-            get
-            {
-                return mstrModuloDes;
-            }
-
-            set
-            {
-                mstrModuloDes = value;
-            }
-        }
-
-        public string ModuloEsp
-        {
-            get
-            {
-                return mstrModuloEsp;
-            }
-
-            set
-            {
-                mstrModuloEsp = value;
-            }
-        }
-
-        public long EstadoId
-        {
-            get
-            {
-                return mlngEstadoId;
-            }
-
-            set
-            {
-                mlngEstadoId = value;
-            }
-        }
-
-        public long Id
-        {
-            get
-            {
-                return mlngId;
-            }
-
-            set
-            {
-                mlngId = value;
-            }
-        }
+        public clsModuloVM VM;
 
         //******************************************************
         //* The following enumerations will change for each
@@ -114,7 +30,7 @@ namespace Parametros.Models.DAC
             Grid = 3,
             GridCheck = 4,
             ModuloCod = 5,
-            GridModuloId = 6
+            EstadoId = 6
         }
 
         public enum OrderByFilters : byte
@@ -302,73 +218,117 @@ namespace Parametros.Models.DAC
 
         public void PropertyInit()
         {
-            mlngModuloId = 0;
-            mstrModuloCod = "";
-            mstrModuloDes = "";
-            mstrModuloEsp = "";
-            mlngEstadoId = 0;
+            VM = new clsModuloVM();
+            VM.ModuloId = 0;
+            VM.ModuloCod = "";
+            VM.ModuloDes = "";
+            VM.ModuloEsp = "";
+            VM.EstadoId = 0;
+        }
+
+        protected override void SetPrimaryKey()
+        {
+            VM.ModuloId = mlngId;
         }
 
         protected override void SelectParameter()
         {
-            Array.Resize(ref moParameters, 3);
-            moParameters[0] = new SqlParameter("@SelectFilter", mintSelectFilter);
-            moParameters[1] = new SqlParameter("@WhereFilter", mintWhereFilter);
-            moParameters[2] = new SqlParameter("@OrderByFilter", mintOrderByFilter);
+            string strSQL = null;
+
+            mstrStoreProcName = "segModuloSelect";
 
             switch (mintSelectFilter)
             {
                 case SelectFilters.All:
-                    mstrStoreProcName = "segModuloSelect";
-                    break;
-
-                case SelectFilters.RowCount:
-                    mstrStoreProcName = "segModuloSelect";
+                    strSQL = " SELECT  " +
+                             "    segModulo.ModuloId, " +
+                             "    segModulo.ModuloCod, " +
+                             "    segModulo.ModuloDes, " +
+                             "    segModulo.ModuloEsp, " +
+                             "    segModulo.EstadoId " +
+                             " FROM  segModulo ";
                     break;
 
                 case SelectFilters.ListBox:
-                    mstrStoreProcName = "segModuloSelect";
+                    strSQL = " SELECT  " +
+                             "    segModulo.ModuloId, " +
+                             "    segModulo.ModuloCod, " +
+                             "    segModulo.ModuloDes " +
+                             " FROM  segModulo ";
                     break;
 
                 case SelectFilters.Grid:
-                    mstrStoreProcName = "segModuloSelect";
+                    strSQL = " SELECT  " +
+                             "    segModulo.ModuloId, " +
+                             "    segModulo.ModuloCod, " +
+                             "    segModulo.ModuloDes, " +
+                             "    segModulo.ModuloEsp, " +
+                             "    segModulo.EstadoId " +
+                             "    parEstado.EstadoDes " +
+                             " FROM  segModulo " +
+                             " LEFT JOIN parEstado ON segModulo.EstadoId = parEstado.EstadoId	";
+
                     break;
 
                 case SelectFilters.GridCheck:
                     break;
             }
 
-            WhereParameter();
+            strSQL += WhereFilterGet() + OrderByFilterGet();
 
-            //Call OrderByParameter()
+            Array.Resize(ref moParameters, 1);
+            moParameters[0] = new SqlParameter("@SQL", strSQL);
         }
 
-        private void WhereParameter()
+        private string WhereFilterGet()
         {
+            string strSQL = null;
+
             switch (mintWhereFilter)
             {
                 case WhereFilters.PrimaryKey:
-                    Array.Resize(ref moParameters, moParameters.Length + 2);
-                    moParameters[3] = new SqlParameter("@ModuloId", mlngModuloId);
-                    moParameters[4] = new SqlParameter("@EstadoId", Convert.ToInt32(0));
+                    strSQL = " WHERE ModuloId = " + SysData.NumberToField(VM.ModuloId);
                     break;
 
                 case WhereFilters.ModuloDes:
+                    strSQL = " WHERE segModulo.ModuloDes = " + SysData.StringToField(VM.ModuloDes);
                     break;
-                //strSQL = " WHERE  segModulo.ModuloDes = " & StringToField(mstrModuloDes)
+
+                case WhereFilters.None:
+                    strSQL = " WHERE segModulo.EstadoId = " + SysData.NumberToField(VM.EstadoId);
+                    break;
+
+                case WhereFilters.EstadoId:
+                    strSQL = " WHERE segModulo.EstadoId = " + SysData.NumberToField(VM.EstadoId);
+                    break;
 
                 case WhereFilters.Grid:
-                    Array.Resize(ref moParameters, moParameters.Length + 2);
-                    moParameters[3] = new SqlParameter("@ModuloId", Convert.ToInt32(0));
-                    moParameters[4] = new SqlParameter("@EstadoId", Convert.ToInt32(0));
-                    break;
-
-                case WhereFilters.ModuloCod:
-                    break;
-
-                case WhereFilters.GridCheck:
                     break;
             }
+
+            return strSQL;
+        }
+
+        private string OrderByFilterGet()
+        {
+            string strSQL = null;
+
+            switch (mintOrderByFilter)
+            {
+                case OrderByFilters.ModuloId:
+                    strSQL = " ORDER BY segModulo.ModuloId ";
+                    break;
+
+                case OrderByFilters.Grid:
+                    strSQL = " ORDER BY segModulo.ModuloDes";
+                    break;
+
+                case OrderByFilters.ModuloDes:
+                    strSQL = " ORDER BY segModulo.ModuloDes DESC ";
+                    break;
+            }
+
+            return strSQL;
         }
 
         protected override void InsertParameter()
@@ -377,13 +337,14 @@ namespace Parametros.Models.DAC
             {
                 case InsertFilters.All:
                     mstrStoreProcName = "segModuloInsert";
-                    moParameters = new SqlParameter[6] {
+                    moParameters = new SqlParameter[7] {
                         new SqlParameter("@InsertFilter", mintInsertFilter),
                         new SqlParameter("@Id", SqlDbType.Int),
-                        new SqlParameter("@ModuloCod", mstrModuloCod),
-                        new SqlParameter("@ModuloDes", mstrModuloDes),
-                        new SqlParameter("@ModuloEsp", mstrModuloEsp),
-                        new SqlParameter("@EstadoId", mlngEstadoId)};
+                        new SqlParameter(clsModuloVM._ModuloId, VM.ModuloId),
+                        new SqlParameter(clsModuloVM._ModuloCod, VM.ModuloCod),
+                        new SqlParameter(clsModuloVM._ModuloDes, VM.ModuloDes),
+                        new SqlParameter(clsModuloVM._ModuloEsp, VM.ModuloEsp),
+                        new SqlParameter(clsModuloVM._EstadoId, VM.EstadoId)};
                     moParameters[1].Direction = ParameterDirection.Output;
                     break;
             }
@@ -397,11 +358,11 @@ namespace Parametros.Models.DAC
                     mstrStoreProcName = "segModuloUpdate";
                     moParameters = new SqlParameter[6] {
                         new SqlParameter("@UpdateFilter", mintUpdateFilter),
-                        new SqlParameter("@ModuloId", mlngModuloId),
-                        new SqlParameter("@ModuloCod", mstrModuloCod),
-                        new SqlParameter("@ModuloDes", mstrModuloDes),
-                        new SqlParameter("@ModuloEsp", mstrModuloEsp),
-                        new SqlParameter("@EstadoId", mlngEstadoId)};
+                        new SqlParameter(clsModuloVM._ModuloId, VM.ModuloId),
+                        new SqlParameter(clsModuloVM._ModuloCod, VM.ModuloCod),
+                        new SqlParameter(clsModuloVM._ModuloDes, VM.ModuloDes),
+                        new SqlParameter(clsModuloVM._ModuloEsp, VM.ModuloEsp),
+                        new SqlParameter(clsModuloVM._EstadoId, VM.EstadoId)};
                     break;
             }
         }
@@ -414,7 +375,7 @@ namespace Parametros.Models.DAC
                     mstrStoreProcName = "segModuloDelete";
                     moParameters = new SqlParameter[2] {
                         new SqlParameter("@DeleteFilter", mintDeleteFilter),
-                        new SqlParameter("@ModuloId", mlngModuloId)};
+                        new SqlParameter(clsModuloVM._ModuloId, VM.ModuloId) };
                     break;
             }
         }
@@ -428,17 +389,17 @@ namespace Parametros.Models.DAC
                 switch (mintSelectFilter)
                 {
                     case SelectFilters.All:
-                        mlngModuloId = SysData.ToLong(oDataRow["ModuloId"]);
-                        mstrModuloCod = SysData.ToStr(oDataRow["ModuloCod"]);
-                        mstrModuloDes = SysData.ToStr(oDataRow["ModuloDes"]);
-                        mstrModuloEsp = SysData.ToStr(oDataRow["ModuloEsp"]);
-                        mlngEstadoId = SysData.ToLong(oDataRow["EstadoId"]);
+                        VM.ModuloId = SysData.ToLong(oDataRow[clsModuloVM._ModuloId]);
+                        VM.ModuloCod = SysData.ToStr(oDataRow[clsModuloVM._ModuloCod]);
+                        VM.ModuloDes = SysData.ToStr(oDataRow[clsModuloVM._ModuloDes]);
+                        VM.ModuloEsp = SysData.ToStr(oDataRow[clsModuloVM._ModuloEsp]);
+                        VM.EstadoId = SysData.ToLong(oDataRow[clsModuloVM._EstadoId]);
                         break;
 
                     case SelectFilters.ListBox:
-                        mlngModuloId = SysData.ToLong(oDataRow["ModuloId"]);
-                        mstrModuloCod = SysData.ToStr(oDataRow["ModuloCod"]);
-                        mstrModuloDes = SysData.ToStr(oDataRow["ModuloDes"]);
+                        VM.ModuloId = SysData.ToLong(oDataRow[clsModuloVM._ModuloId]);
+                        VM.ModuloCod = SysData.ToStr(oDataRow[clsModuloVM._ModuloCod]);
+                        VM.ModuloDes = SysData.ToStr(oDataRow[clsModuloVM._ModuloDes]);
                         break;
                 }
             }
@@ -454,15 +415,13 @@ namespace Parametros.Models.DAC
             bool returnValue = false;
             string strMsg = string.Empty;
 
-            if (mstrModuloCod.Length == 0)
-            {
-                strMsg += "Ingrese el Código <br />";
-            }
+            if (VM.ModuloId <= 0) { strMsg += "El Estado ID es Requerido" + Environment.NewLine; }
 
-            if (mstrModuloDes.Length == 0)
-            {
-                strMsg += "Ingrese la Aplicación <br />";
-            }
+            if (VM.ModuloCod.Length <= 0) { strMsg += "El Código es Requerido" + Environment.NewLine; }
+
+            if (VM.EstadoDes.Length <= 0) { strMsg += "La Descripcinón es Requerido" + Environment.NewLine; }
+
+            if (VM.EstadoId <= 0) { strMsg += "El ID del Estado es Requerido" + Environment.NewLine; }
 
             if (strMsg.Trim() != string.Empty)
             {

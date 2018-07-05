@@ -29,6 +29,8 @@ namespace Parametros.Models.DAC
         protected abstract void UpdateParameter();
         protected abstract void DeleteParameter();
 
+        protected abstract void SetPrimaryKey();
+
         protected abstract void Retrieve(DataRow oDataRow);
         public abstract bool Validate();
 
@@ -312,6 +314,7 @@ namespace Parametros.Models.DAC
                     if (intRecordsAffected > 0)
                     {
                         mlngId = Convert.ToInt64(oCommand.Parameters["@Id"].Value);
+                        SetPrimaryKey();
                         returnValue = true;
                     }
                 }
@@ -484,10 +487,9 @@ namespace Parametros.Models.DAC
 
             catch (Exception exp)
             {
-               
+                throw (exp);
             }
         }
-
 
     }
 }

@@ -497,7 +497,9 @@ namespace Parametros.Models.DAC
             //Call CloseConection()
         }
 
-
-
+        protected override void SetPrimaryKey()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
