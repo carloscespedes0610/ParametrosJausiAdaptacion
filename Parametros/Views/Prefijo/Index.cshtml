@@ -1,0 +1,198 @@
+﻿@model IEnumerable<Parametros.Models.VM.clsPrefijoVM>
+
+<section class="content">
+    <div class="box-header with-border">
+
+        <h3 class="box-title">Prefijos </h3>
+
+        <div class="box-tools pull-right">
+            <div class="has-feedback">
+                <a class="btn btn-default btn-sm" href="@Url.Action("Create", "Prefijo")"> <i class="glyphicon glyphicon-plus"></i></a>
+                <a class="btn btn-default btn-sm" href="@Url.Action("Index", "Prefijo")"> <i class="fa fa-refresh"></i></a>
+                
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                        <i class="glyphicon glyphicon-plus"></i>
+                        <span class="fa fa-caret-down"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">Correlativo</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#" onclick="showPopup(1)">P/Gestion</a></li>
+                        <li><a href="#" onclick="showPopup(2)">P/Periodo</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @(Html.DevExtreme().DataGrid<Parametros.Models.VM.clsPrefijoVM>()
+        .ID("gridContainer")
+        .DataSource(Model, new string[] { "PrefijoId" })
+        .AllowColumnResizing(true)
+        .ShowColumnLines(false)
+        .ShowRowLines(true)
+        .ShowBorders(true)
+        .FilterRow(filterRow => filterRow.Visible(true).ApplyFilter(GridApplyFilterMode.Auto))
+        .Sorting(sorting => sorting.Mode(GridSortingMode.Multiple))
+        .Paging(p => p.PageSize(10))
+        .Width("100%")
+        .RowAlternationEnabled(true)
+        .Selection(s => s.Mode(SelectionMode.Single))
+        .Editing(e => e.Mode(GridEditMode.Row))
+        .OnCellPrepared("onCellPrepared")
+        .OnSelectionChanged("selectionChanged")
+        .Columns(columns =>
+        {
+            columns.AddFor(m => m.PrefijoNro).Width("10%");
+            columns.AddFor(m => m.PrefijoDes).Width("40%");
+            columns.AddFor(m => m.DocDes).Width("20%");
+            columns.AddFor(m => m.ModuloDes).Width("20%");
+            columns.AddFor(m => m.AplicacionDes).Width("20%");
+            
+            columns.AddFor(m => m.EstadoDes).Width("10%");
+
+            columns.Add().DataField("Edit").Caption("").Width(30).CellTemplate(Html.ActionLink(" ", "Edit", new { id = "PrefijoId" }, new { @class = "dx-icon-edit" }).ToHtmlString().Replace("PrefijoId", "<%= data.PrefijoId %>")).AllowFiltering(false);
+            columns.Add().DataField("Delete").Caption("").Width(30).CellTemplate(Html.ActionLink(" ", "Delete", new { id = "PrefijoId" }, new { @class = "dx-icon-trash" }).ToHtmlString().Replace("PrefijoId", "<%= data.PrefijoId %>")).AllowFiltering(false);
+            columns.Add().DataField("Details").Caption("").Width(30).CellTemplate(Html.ActionLink(" ", "Details", new { id = "PrefijoId" }, new { @class = "fa fa-info-circle" }).ToHtmlString().Replace("PrefijoId", "<%= data.PrefijoId %>")).AllowFiltering(false);
+        })
+        
+    )
+
+   
+
+</section>
+
+
+@(Html.DevExtreme().Popup()
+        .ID("info-popup")
+        .Width(250)
+        .Height("auto")
+        .ShowTitle(true)
+        .Title("Información")
+        .Visible(false)
+        .DragEnabled(false)
+        .CloseOnOutsideClick(true)
+        .ContentTemplate(@<text>
+           <div class='large-text'>Seleccione un prefijo</div>
+        </text>)
+)
+
+
+
+@(Html.DevExtreme().Popup()
+        .ID("correlativo-popup")
+        .Width(500)
+        .Height(300)
+        .ShowTitle(true)
+        .Title("")
+        .Visible(false)
+        .DragEnabled(false)
+        .CloseOnOutsideClick(true)      
+)
+
+<script>
+
+    var tipo = 1;
+    var itemSelected = 0;
+    var gestionId;
+
+    var buttonOptions = {
+        icon: "check",
+        width: 210,
+        height: 44,
+        type: "default",
+        text: "Generar",
+        onClick: function (e) {
+            generarCorrelativo()
+        }
+    };
+    var GestionList = @Html.Raw(Json.Encode(ViewBag.GestionId));
+    var selectBoxGestion = {
+        dataSource: GestionList,
+        valueExpr: 'GestionId',
+        displayExpr: 'GestionNro',
+        onValueChanged: function (e) {
+            gestionId = e.value;            
+        }
+    }
+
+    function selectionChanged(data) {
+        itemSelected = data.selectedRowsData[0];
+    }
+
+    function getPopUpInstance() {
+        return $("#correlativo-popup").dxPopup("instance");
+    }
+
+    function showPopup(id) {
+
+        tipo = id;
+
+        if (itemSelected.PrefijoId > 0) {
+            var popup = getPopUpInstance();
+            popup.option("contentTemplate", function () {
+                var result= $("<div />").append(
+                    $("<p>Prefijo      : <span>" +itemSelected.PrefijoNro +
+                        " - </span> <span>" + itemSelected.PrefijoDes + "</span></p>"),
+                    $("<p>Documento: <span>" + itemSelected.DocDes + "</span></p>"),
+                    $("<div id='selectBoxContainer'></div><br/>"),
+                    $("<div id='favorites' class='favorites'></div>"));
+
+                    var button = result.find("#favorites")
+                    .dxButton(buttonOptions)
+                    .dxButton("instance");
+
+                    var selectbox = result.find("#selectBoxContainer")
+                        .dxSelectBox(selectBoxGestion)
+                        .dxSelectBox("instance");
+                return result
+                });
+
+
+            popup.option("title", "Correlativo por Gestión");
+            if (id == 2) {
+                popup.option("title", "Correlativo por Periodo");
+            }
+
+            popup.show();
+        } else {
+            var popupInfo = $("#info-popup").dxPopup("instance");
+            popupInfo.show();
+        }
+    }
+
+    function generarCorrelativo(data) {
+       
+      
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GenerarCorrelativo", "Correlativo", null)',
+            datatype: "json",
+            traditional: true,
+            data: { 'tipo': tipo, 'prefijo': itemSelected.PrefijoId, 'gestion': gestionId },
+            success: function (data) {
+                if (data == "ok") {
+                    $("#correlativo-popup").dxPopup("hide");
+                } else {
+                    alert(data);
+                }
+            }
+        });
+    }
+
+</script>
+
+
+<script>
+
+    function onCellPrepared(e) {
+        if (e.rowType === "header") {
+            e.cellElement.addClass("columnHeaderCSS");
+            e.cellElement.find("input").addClass("columnHeaderCSS");
+        }
+    };
+
+        
+
+</script>

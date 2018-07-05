@@ -1,0 +1,62 @@
+﻿@model Parametros.Models.VM.clsCorrelativoVM
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Eliminar Correlativo</h3>
+                </div>
+
+                <div class="box-body">
+                    @using (Html.BeginForm())
+                    {
+                        using (Html.DevExtreme().ValidationGroup())
+                        {
+                            @Html.AntiForgeryToken();
+                            @Html.HiddenFor(m => m.CorreId);
+
+                            @(Html.DevExtreme().Form<Parametros.Models.VM.clsCorrelativoVM>()
+                                .ShowValidationSummary(true)
+                                .Items(items =>
+                                {
+                                    items.AddGroup()
+                                    .ColCount(2)
+                                    .Items(nestedItems =>
+                                    {
+
+                                        nestedItems.AddSimpleFor(m => m.PrefijoNro).Editor(e => e.TextBox().ReadOnly(true));
+                                        nestedItems.AddSimpleFor(m => m.PrefijoDes).Editor(e => e.TextBox().ReadOnly(true));
+                                        nestedItems.AddSimpleFor(m => m.DocDes).Editor(e => e.TextBox().ReadOnly(true));
+                                        nestedItems.AddSimpleFor(m => m.GestionNro).Editor(e => e.TextBox().Disabled(true));
+                                        nestedItems.AddSimpleFor(m => m.ModuloDes).Editor(e => e.TextBox().ReadOnly(true));
+                                        nestedItems.AddSimpleFor(m => m.AplicacionDes).Editor(e => e.TextBox().ReadOnly(true));
+
+
+
+                                        nestedItems.AddSimpleFor(m => m.CorreNroAct).Editor(e => e.TextBox().Disabled(true));
+                                        nestedItems.AddSimpleFor(m => m.CorreNroMax).Editor(e => e.TextBox().Disabled(true));
+
+                                        nestedItems.AddSimpleFor(m => m.FecIni).Editor(e => e.DateBox().DisplayFormat("dd/MM/yyyy").Disabled(true));
+                                        nestedItems.AddSimpleFor(m => m.FecFin).Editor(e => e.DateBox().DisplayFormat("dd/MM/yyyy").Disabled(true));
+                                    });
+                                })
+                                .FormData(Model)
+                            )
+
+                            <br>
+                            <div Class="box-footer">
+                                <button type="submit" class="btn btn-primary"><i class="fa fa-trash-o"></i></button>
+                                <a href="@Url.Action("Index", "Correlativo")" class="btn btn-default"><i class="fa fa-reply"></i></a>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

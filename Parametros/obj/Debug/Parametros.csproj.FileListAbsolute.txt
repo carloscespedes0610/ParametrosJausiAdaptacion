@@ -1,0 +1,133 @@
+F:\WebProjects\C#\Parametros\Parametros\bin\Parametros.dll.config
+F:\WebProjects\C#\Parametros\Parametros\bin\Parametros.dll
+F:\WebProjects\C#\Parametros\Parametros\bin\Parametros.pdb
+F:\WebProjects\C#\Parametros\Parametros\bin\Antlr3.Runtime.dll
+F:\WebProjects\C#\Parametros\Parametros\bin\DevExtreme.AspNet.Data.dll
+F:\WebProjects\C#\Parametros\Parametros\bin\DevExtreme.AspNet.Mvc.dll
+F:\WebProjects\C#\Parametros\Parametros\bin\Microsoft.Web.Infrastructure.dll
+F:\WebProjects\C#\Parametros\Parametros\bin\Newtonsoft.Json.dll
+F:\WebProjects\C#\Parametros\Parametros\bin\System.Net.Http.Formatting.dll
+F:\WebProjects\C#\Parametros\Parametros\bin\System.Web.Helpers.dll
+F:\WebProjects\C#\Parametros\Parametros\bin\System.Web.Http.dll
+F:\WebProjects\C#\Parametros\Parametros\bin\System.Web.Http.WebHost.dll
+F:\WebProjects\C#\Parametros\Parametros\bin\System.Web.Mvc.dll
+F:\WebProjects\C#\Parametros\Parametros\bin\System.Web.Optimization.dll
+F:\WebProjects\C#\Parametros\Parametros\bin\System.Web.Razor.dll
+F:\WebProjects\C#\Parametros\Parametros\bin\System.Web.WebPages.Deployment.dll
+F:\WebProjects\C#\Parametros\Parametros\bin\System.Web.WebPages.dll
+F:\WebProjects\C#\Parametros\Parametros\bin\System.Web.WebPages.Razor.dll
+F:\WebProjects\C#\Parametros\Parametros\bin\WebGrease.dll
+F:\WebProjects\C#\Parametros\Parametros\bin\Antlr3.Runtime.pdb
+F:\WebProjects\C#\Parametros\Parametros\bin\DevExtreme.AspNet.Mvc.xml
+F:\WebProjects\C#\Parametros\Parametros\bin\Newtonsoft.Json.xml
+F:\WebProjects\C#\Parametros\Parametros\bin\System.Net.Http.Formatting.xml
+F:\WebProjects\C#\Parametros\Parametros\bin\System.Web.Helpers.xml
+F:\WebProjects\C#\Parametros\Parametros\bin\System.Web.Http.xml
+F:\WebProjects\C#\Parametros\Parametros\bin\System.Web.Http.WebHost.xml
+F:\WebProjects\C#\Parametros\Parametros\bin\System.Web.Mvc.xml
+F:\WebProjects\C#\Parametros\Parametros\bin\System.Web.Optimization.xml
+F:\WebProjects\C#\Parametros\Parametros\bin\System.Web.Razor.xml
+F:\WebProjects\C#\Parametros\Parametros\bin\System.Web.WebPages.xml
+F:\WebProjects\C#\Parametros\Parametros\bin\System.Web.WebPages.Deployment.xml
+F:\WebProjects\C#\Parametros\Parametros\bin\System.Web.WebPages.Razor.xml
+F:\WebProjects\C#\Parametros\Parametros\obj\Debug\Parametros.csproj.CoreCompileInputs.cache
+F:\WebProjects\C#\Parametros\Parametros\obj\Debug\Parametros.dll
+F:\WebProjects\C#\Parametros\Parametros\obj\Debug\Parametros.pdb
+F:\WebProjects\C#\Parametros\Parametros\bin\Microsoft.Owin.dll
+F:\WebProjects\C#\Parametros\Parametros\bin\Owin.dll
+F:\WebProjects\C#\Parametros\Parametros\bin\Microsoft.Owin.xml
+F:\WebProjects\C#\Parametros\Parametros\obj\Debug\Parametros.csproj.GenerateResource.Cache
+F:\WebProjects\C#\Parametros\Parametros\obj\Debug\Parametros.resources.Resources.resources
+F:\WebProjects\C#\Parametros\Parametros\obj\Debug\Parametros.resources.Resources.en.resources
+F:\WebProjects\C#\Parametros\Parametros\bin\en\Parametros.resources.dll
+F:\WebProjects\C#\Parametros\Parametros\obj\Debug\en\Parametros.resources.dll
+F:\WebProjects\C#\Parametros\Parametros\obj\Debug\Parametros.csprojResolveAssemblyReference.cache
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\Parametros.dll.config
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\Parametros.dll
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\Parametros.pdb
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\en\Parametros.resources.dll
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\Antlr3.Runtime.dll
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\DevExtreme.AspNet.Data.dll
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\DevExtreme.AspNet.Mvc.dll
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\Microsoft.Owin.dll
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\Microsoft.Web.Infrastructure.dll
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\Newtonsoft.Json.dll
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\Owin.dll
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\System.Net.Http.Formatting.dll
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\System.Web.Helpers.dll
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\System.Web.Http.dll
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\System.Web.Http.WebHost.dll
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\System.Web.Mvc.dll
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\System.Web.Optimization.dll
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\System.Web.Razor.dll
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\System.Web.WebPages.Deployment.dll
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\System.Web.WebPages.dll
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\System.Web.WebPages.Razor.dll
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\WebGrease.dll
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\Antlr3.Runtime.pdb
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\DevExtreme.AspNet.Mvc.xml
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\Microsoft.Owin.xml
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\Newtonsoft.Json.xml
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\System.Net.Http.Formatting.xml
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\System.Web.Helpers.xml
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\System.Web.Http.xml
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\System.Web.Http.WebHost.xml
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\System.Web.Mvc.xml
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\System.Web.Optimization.xml
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\System.Web.Razor.xml
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\System.Web.WebPages.xml
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\System.Web.WebPages.Deployment.xml
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\bin\System.Web.WebPages.Razor.xml
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\obj\Debug\Parametros.csprojResolveAssemblyReference.cache
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\obj\Debug\Parametros.resources.Resources.resources
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\obj\Debug\Parametros.resources.Resources.en.resources
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\obj\Debug\Parametros.csproj.GenerateResource.Cache
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\obj\Debug\Parametros.csproj.CoreCompileInputs.cache
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\obj\Debug\en\Parametros.resources.dll
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\obj\Debug\Parametros.dll
+C:\Users\USER\Desktop\ParametroProject\Parametros\Parametros\obj\Debug\Parametros.pdb
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\Parametros.dll.config
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\Parametros.dll
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\Parametros.pdb
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\en\Parametros.resources.dll
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\Antlr3.Runtime.dll
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\DevExtreme.AspNet.Data.dll
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\DevExtreme.AspNet.Mvc.dll
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\Microsoft.Owin.dll
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\Microsoft.Web.Infrastructure.dll
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\Newtonsoft.Json.dll
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\Owin.dll
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\System.Net.Http.Formatting.dll
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\System.Web.Helpers.dll
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\System.Web.Http.dll
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\System.Web.Http.WebHost.dll
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\System.Web.Mvc.dll
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\System.Web.Optimization.dll
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\System.Web.Razor.dll
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\System.Web.WebPages.Deployment.dll
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\System.Web.WebPages.dll
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\System.Web.WebPages.Razor.dll
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\WebGrease.dll
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\Antlr3.Runtime.pdb
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\DevExtreme.AspNet.Mvc.xml
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\Microsoft.Owin.xml
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\Newtonsoft.Json.xml
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\System.Net.Http.Formatting.xml
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\System.Web.Helpers.xml
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\System.Web.Http.xml
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\System.Web.Http.WebHost.xml
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\System.Web.Mvc.xml
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\System.Web.Optimization.xml
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\System.Web.Razor.xml
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\System.Web.WebPages.xml
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\System.Web.WebPages.Deployment.xml
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\bin\System.Web.WebPages.Razor.xml
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\obj\Debug\Parametros.csprojAssemblyReference.cache
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\obj\Debug\Parametros.resources.Resources.resources
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\obj\Debug\Parametros.resources.Resources.en.resources
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\obj\Debug\Parametros.csproj.GenerateResource.cache
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\obj\Debug\Parametros.csproj.CoreCompileInputs.cache
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\obj\Debug\en\Parametros.resources.dll
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\obj\Debug\Parametros.csproj.CopyComplete
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\obj\Debug\Parametros.dll
+D:\Carlos\Practicas ASP Net MVC\Parametros\Parametros\obj\Debug\Parametros.pdb

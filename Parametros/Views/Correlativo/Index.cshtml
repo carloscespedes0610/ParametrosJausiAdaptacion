@@ -1,0 +1,62 @@
+﻿@model IEnumerable<Parametros.Models.VM.clsCorrelativoVM>
+
+<section class="content">
+    <div class="box-header with-border">
+
+        <h3 class="box-title">Correlativos </h3>
+
+        <div class="box-tools pull-right">
+            <div class="has-feedback">
+                <a class="btn btn-default btn-sm" href="@Url.Action("Create", "Correlativo")"> <i class="glyphicon glyphicon-plus"></i></a>
+                <a class="btn btn-default btn-sm" href="@Url.Action("Index", "Correlativo")"> <i class="fa fa-refresh"></i></a>
+                
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                        <i class="glyphicon glyphicon-plus"></i>
+                        <span class="fa fa-caret-down"></span>
+                    </button>                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @(Html.DevExtreme().DataGrid<Parametros.Models.VM.clsCorrelativoVM>()
+        .ID("gridContainer")
+        .DataSource(Model, new string[] { "CorreId" })
+        .AllowColumnResizing(true)
+        .ShowColumnLines(false)
+        .ShowRowLines(true)
+        .ShowBorders(true)
+        .FilterRow(filterRow => filterRow.Visible(true).ApplyFilter(GridApplyFilterMode.Auto))
+        .Sorting(sorting => sorting.Mode(GridSortingMode.Multiple))
+        .Paging(p => p.PageSize(10))
+        .Width("100%")
+        .RowAlternationEnabled(true)
+        .Selection(s => s.Mode(SelectionMode.Single))
+        .Editing(e => e.Mode(GridEditMode.Row))
+        .OnCellPrepared("onCellPrepared")
+        .Columns(columns =>
+        {
+            columns.AddFor(m => m.PrefijoDes).Width("20%");
+            columns.AddFor(m => m.GestionNro).Width("10%");
+            columns.AddFor(m => m.DocDes).Width("20%");
+            columns.AddFor(m => m.ModuloDes).Width("20%");
+            columns.AddFor(m => m.AplicacionDes).Width("20%");
+            
+
+            columns.Add().DataField("Edit").Caption("").Width(30).CellTemplate(Html.ActionLink(" ", "Edit", new { id = "CorreId" }, new { @class = "dx-icon-edit" }).ToHtmlString().Replace("CorreId", "<%= data.CorreId %>")).AllowFiltering(false);
+            columns.Add().DataField("Delete").Caption("").Width(30).CellTemplate(Html.ActionLink(" ", "Delete", new { id = "CorreId" }, new { @class = "dx-icon-trash" }).ToHtmlString().Replace("CorreId", "<%= data.CorreId %>")).AllowFiltering(false);
+            columns.Add().DataField("Details").Caption("").Width(30).CellTemplate(Html.ActionLink(" ", "Details", new { id = "CorreId" }, new { @class = "fa fa-info-circle" }).ToHtmlString().Replace("CorreId", "<%= data.CorreId %>")).AllowFiltering(false);
+        })
+    )
+
+</section>
+
+<script>
+    function onCellPrepared(e) {
+        if (e.rowType === "header") {
+            e.cellElement.addClass("columnHeaderCSS");
+            e.cellElement.find("input").addClass("columnHeaderCSS");
+        }
+    }
+</script>

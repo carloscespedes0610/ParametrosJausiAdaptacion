@@ -1,0 +1,61 @@
+﻿@model Parametros.Models.VM.clsDocumentoVM
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Eliminar Documento</h3>
+                </div>
+
+                <div class="box-body">
+                    @using (Html.BeginForm())
+                    {
+                        using (Html.DevExtreme().ValidationGroup())
+                        {
+                            @Html.AntiForgeryToken();
+                            @Html.HiddenFor(m => m.DocId);
+
+                            @(Html.DevExtreme().Form<Parametros.Models.VM.clsDocumentoVM>()
+                                .ShowValidationSummary(true)
+                                .Items(items =>
+                                {
+                                    items.AddGroup()
+                                    .Items(groupItems =>
+                                    {
+                                        groupItems.AddGroup()
+                                        .Items(nestedItems =>
+                                        {
+                                            nestedItems.AddSimpleFor(m => m.DocCod).Editor(e => e.TextBox().Width("50%").Disabled(true));
+                                            nestedItems.AddSimpleFor(m => m.DocNem).Editor(e => e.TextBox().Disabled(true));
+                                            nestedItems.AddSimpleFor(m => m.DocDes).Editor(e => e.TextBox().Disabled(true));
+
+                                            nestedItems.AddSimpleFor(m => m.ModuloId).Editor(e => e.SelectBox().ID("Modulo").DataSource(ViewBag.ModuloId).ValueExpr("ModuloId").DisplayExpr("ModuloDes").SearchEnabled(true).Disabled(true));
+                                            nestedItems.AddSimpleFor(m => m.AplicacionId).Editor(e => e.SelectBox().ID("Aplicacion").DataSource(ViewBag.AplicacionId).ValueExpr("AplicacionId").DisplayExpr("AplicacionDes").Disabled(true));
+
+                                            nestedItems.AddSimpleFor(m => m.DocIso).Editor(e => e.TextBox().Disabled(true));
+                                            nestedItems.AddSimpleFor(m => m.DocRev).Editor(e => e.TextBox().Disabled(true));
+                                            nestedItems.AddSimpleFor(m => m.DocFec).Editor(e => e.TextBox().Disabled(true));
+                                            nestedItems.AddSimpleFor(m => m.EstadoId).Editor(e => e.SelectBox().DataSource(ViewBag.EstadoId).ValueExpr("EstadoId").DisplayExpr("EstadoDes").Disabled(true));
+                                        });
+                                    });
+                                })
+                                .FormData(Model)
+                            )
+
+                            <br>
+                            <div Class="box-footer">
+                                <button type="submit" class="btn btn-primary"><i class="fa fa-trash-o"></i></button>
+                                <a href="@Url.Action("Index", "Documento")" class="btn btn-default"><i class="fa fa-reply"></i></a>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

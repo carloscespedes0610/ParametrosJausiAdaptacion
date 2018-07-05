@@ -1,0 +1,172 @@
+﻿@model Parametros.Models.VM.clsPrefijoVM
+
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+
+
+                <div class="box-body">
+                    @using (Html.BeginForm())
+                    {
+                        using (Html.DevExtreme().ValidationGroup())
+                        {
+
+                            <div class="box-header with-border">
+                                <h3 class="box-title">Información Prefijo</h3>
+                                <div Class="box-tools pull-right">
+                                    <div class="has-feedback">
+                                        <a href="@Url.Action("Edit", "Prefijo", new { id = Model.DocId })" class="btn btn-primary"><i class="fa fa-edit"></i></a>
+
+                                        <a href="@Url.Action("Index", "Prefijo")" Class="btn btn-default"><i Class="fa fa-reply"></i></a>
+                                    </div>
+                                    <br />
+                                </div>
+
+                            </div>
+
+
+                            <br />
+
+                            @Html.AntiForgeryToken();
+
+                            @(Html.DevExtreme().Form<Parametros.Models.VM.clsPrefijoVM>()
+                                .ID("form")
+                                .ShowValidationSummary(true)
+                                .Items(items =>
+                                {
+                                    items.AddTabbed()
+                                     .Tabs(tabItems =>
+                                     {
+                                         tabItems.Add()
+                                                 .Title("Serie")
+                                                 .Items(itemsTab1 =>
+                                                 {
+                                                     itemsTab1.AddGroup()
+                                                            .ColCount(6)
+                                                            .Items(groupItems =>
+                                                            {
+                                                                groupItems.AddSimpleFor(m => m.DocDes).Editor(e => e.TextBox().ReadOnly(true)).ColSpan(6);
+
+                                                                groupItems.AddSimpleFor(m => m.ModuloDes).Editor(e => e.TextBox().ReadOnly(true)).ColSpan(3);
+                                                                groupItems.AddSimpleFor(m => m.AplicacionDes).Editor(e => e.TextBox().ReadOnly(true)).ColSpan(3);
+
+
+                                                                groupItems.AddGroup().ColSpan(2).Items(g1 =>
+                                                                {
+                                                                    g1.AddSimpleFor(m => m.PrefijoNro).Editor(e => e.TextBox().ReadOnly(true));
+                                                                    g1.AddSimpleFor(m => m.PrefijoIniGes).Editor(e => e.CheckBox().ReadOnly(true));
+                                                                });
+
+                                                                groupItems.AddGroup().ColSpan(4).Items(g1 =>
+                                                                {
+                                                                    g1.AddSimpleFor(m => m.PrefijoDes).Editor(e => e.TextBox().ReadOnly(true));
+                                                                    g1.AddSimpleFor(m => m.PrefijoTipoDes).Editor(e => e.TextBox().ReadOnly(true)).ColSpan(4);
+                                                                });
+
+
+                                                                groupItems.AddSimpleFor(m => m.EstadoDes).Editor(e => e.TextBox().ReadOnly(true)).ColSpan(3);
+                                                            });
+
+                                                     itemsTab1.AddGroup()
+                                                     .Caption("Numeración")
+                                                     .ColCount(6)
+                                                     .Items(groupItems =>
+                                                     {
+                                                         groupItems.AddGroup().ColSpan(2).Items(g1 =>
+                                                         {
+                                                             g1.AddSimpleFor(m => m.ItemMax).Editor(e => e.TextBox().ReadOnly(true));
+                                                             g1.AddSimpleFor(m => m.PrefijoCopiaDes).Editor(e => e.TextBox().ReadOnly(true));
+                                                         });
+
+
+                                                         groupItems.AddGroup().ColSpan(4).Items(g2 =>
+                                                         {
+                                                             g2.AddSimpleFor(m => m.FormatoImpDes).Editor(e => e.TextBox().ReadOnly(true));
+                                                             g2.AddSimpleFor(m => m.MensajeFor).Editor(e => e.TextBox().ReadOnly(true));
+                                                         });
+
+
+                                                     });
+                                                 });
+                                         tabItems.Add()
+                                                 .Title("Impresión")
+                                                 .Items(itemsTab2 =>
+                                                 {
+                                                     itemsTab2.AddGroup()
+                                                            .ColCount(6)
+                                                            .Caption("Razon Social ")
+                                                            .Items(groupItems =>
+                                                            {
+                                                                groupItems.AddSimpleFor(m => m.TipoEncabezadoDes).Editor(e => e.TextBox().ReadOnly(true)).ColSpan(6);
+                                                                groupItems.AddSimpleFor(m => m.RazonSoc).Editor(e => e.TextBox().ReadOnly(true)).ColSpan(4);
+                                                                groupItems.AddSimpleFor(m => m.RazonSocAbr).Editor(e => e.TextBox().ReadOnly(true)).ColSpan(2);
+
+                                                            });
+
+                                                     itemsTab2.AddGroup()
+                                                     .Caption("")
+                                                        .ColCount(2)
+                                                        .Items(groupItems =>
+                                                        {
+                                                            groupItems.AddSimpleFor(m => m.ImprimeUsr).Editor(e => e.CheckBox().ReadOnly(true));
+                                                            groupItems.AddSimpleFor(m => m.ImprimeFec).Editor(e => e.CheckBox().ReadOnly(true));
+
+                                                        });
+
+                                                     itemsTab2.AddGroup()
+                                                     .Caption("Firmas")
+                                                     .ColCount(4)
+                                                     .Items(groupItems =>
+                                                     {
+                                                         groupItems.AddSimpleFor(m => m.FirmaUno).Editor(e => e.TextBox().ReadOnly(true)).Label(l => l.Location(FormLabelLocation.Top).ShowColon(false).Text("Primera"));
+                                                         groupItems.AddSimpleFor(m => m.FirmaSeg).Editor(e => e.TextBox().ReadOnly(true)).Label(l => l.Location(FormLabelLocation.Top).ShowColon(false).Text("Segunda"));
+                                                         groupItems.AddSimpleFor(m => m.FirmaTre).Editor(e => e.TextBox().ReadOnly(true)).Label(l => l.Location(FormLabelLocation.Top).ShowColon(false).Text("Tercera"));
+                                                         groupItems.AddSimpleFor(m => m.FirmaCua).Editor(e => e.TextBox().ReadOnly(true)).Label(l => l.Location(FormLabelLocation.Top).ShowColon(false).Text("Cuarta"));
+                                                     });
+
+                                                     itemsTab2.AddGroup()
+                                                     .Caption("Observaciones")
+
+                                                        .Items(groupItems =>
+                                                        {
+                                                            groupItems.AddSimpleFor(m => m.ObsUno).Editor(e => e.TextBox().ReadOnly(true));
+                                                            groupItems.AddSimpleFor(m => m.ObsDos).Editor(e => e.TextBox().ReadOnly(true));
+
+                                                        });
+
+                                                 });
+                                     });
+
+
+
+                                })
+                                .FormData(Model)
+                            )
+
+
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@if (!ReferenceEquals(ViewBag.MessageErr, null))
+{
+    @(Html.DevExtreme().Popup()
+        .ID("info-popup")
+        .Width("auto")
+        .Height("auto")
+        .ShowTitle(true)
+        .Title("Información")
+        .Visible(true)
+        .DragEnabled(false)
+        .CloseOnOutsideClick(true)
+        .ContentTemplate(@<text>
+            @Html.Raw(ViewBag.MessageErr.Replace(Environment.NewLine, "<br />"))
+        </text>)
+    )
+}

@@ -1,0 +1,108 @@
+﻿@model Parametros.Models.VM.clsCorrelativoVM
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Nuevo Correlativo</h3>
+                </div>
+
+                <div class="box-body">
+                    @using (Html.BeginForm())
+                    {
+                        using (Html.DevExtreme().ValidationGroup())
+                        {
+                            @Html.AntiForgeryToken();
+                            @Html.HiddenFor(m => m.CorreId);
+                            @Html.HiddenFor(m => m.DocId);
+                            @Html.HiddenFor(m => m.ModuloId);
+                            @Html.HiddenFor(m => m.AplicacionId);
+                            @(Html.DevExtreme().Form<Parametros.Models.VM.clsCorrelativoVM>()
+                                .ShowValidationSummary(true)
+                                .ID("form")
+                                .Items(items =>
+                                {
+                                    items.AddGroup()
+                                    .ColCount(2)
+                                    .Items(nestedItems =>
+                                    {
+                                        nestedItems.AddSimpleFor(m => m.PrefijoId).Editor(e => e.SelectBox().DataSource(ViewBag.PrefijoId).OnValueChanged("PrefijoId_ValueChanged").ValueExpr("PrefijoId").DisplayExpr("PrefijoDes")).IsRequired(true);
+                                        nestedItems.AddSimpleFor(m => m.DocDes).Editor(e => e.TextBox().Disabled(true));
+                                        nestedItems.AddSimpleFor(m => m.ModuloDes).Editor(e => e.TextBox().Disabled(true));
+                                        nestedItems.AddSimpleFor(m => m.AplicacionDes).Editor(e => e.TextBox().Disabled(true));
+
+                                        nestedItems.AddSimpleFor(m => m.GestionId).Editor(e => e.SelectBox().DataSource(ViewBag.GestionId).OnValueChanged("GestionId_ValueChanged").ValueExpr("GestionId").DisplayExpr("GestionNro")).IsRequired(true);
+
+
+
+                                    });
+
+                                    items.AddGroup()
+                                    .ColCount(2)
+                                    .Items(itemG2 => {
+                                        itemG2.AddSimpleFor(m => m.CorreNroAct).Editor(e => e.TextBox());
+                                        itemG2.AddSimpleFor(m => m.CorreNroMax).Editor(e => e.TextBox());
+
+                                        itemG2.AddSimpleFor(m => m.FecIni).Editor(e => e.DateBox().DisplayFormat("dd/MM/yyyy"));
+                                        itemG2.AddSimpleFor(m => m.FecFin).Editor(e => e.DateBox().DisplayFormat("dd/MM/yyyy"));
+                                    });
+                                })
+                                .FormData(Model)
+                            )
+
+                            <br>
+                            <div Class="box-footer">
+                                <Button type="submit" Class="btn btn-primary"><i Class="fa fa-floppy-o"></i></Button>
+                                <a href="@Url.Action("Index", "Correlativo")" class="btn btn-default"><i class="fa fa-reply"></i></a>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function getFormInstance() {
+        return $("#form").dxForm("instance");
+    }
+
+    PrefijoList= @Html.Raw(Json.Encode(ViewBag.PrefijoId));
+    GestionList=@Html.Raw(Json.Encode(ViewBag.GestionId));
+
+    function PrefijoId_ValueChanged(data) {
+        $.each(PrefijoList, function (i, item) {
+            if (item.PrefijoId == data.value) {
+                getFormInstance().getEditor("DocDes").option("value", item.DocDes);
+                getFormInstance().getEditor("ModuloDes").option("value",item.ModuloDes);
+                getFormInstance().getEditor("AplicacionDes").option("value", item.AplicacionDes);
+
+                $("#DocId").val(item.DocId);
+                $("#ModuloId").val(item.ModuloId);
+                $("#AplicacionId").val(item.AplicacionId);
+
+
+            }
+        });
+    }
+
+    function GestionId_ValueChanged(data) {
+
+        $.each(GestionList, function (i, item) {
+            if (item.GestionId == data.value) {
+                var FecIni = new Date(item.GestionFecIni.match(/\d+/)[0] * 1);
+                var FecFin = new Date(item.GestionFecFin.match(/\d+/)[0] * 1);
+                getFormInstance().getEditor("FecIni").option("value", FecIni);
+                getFormInstance().getEditor("FecFin").option("value", FecFin);
+              
+
+            }
+        });
+    }
+</script>

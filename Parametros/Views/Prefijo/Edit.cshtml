@@ -1,0 +1,209 @@
+﻿@model Parametros.Models.VM.clsPrefijoVM
+
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                
+
+                <div class="box-body">
+                    @using (Html.BeginForm())
+                    {
+                        using (Html.DevExtreme().ValidationGroup())
+                        {
+
+                            <div class="box-header with-border">
+                                <h3 class="box-title">Editar Prefijo</h3>
+                                <div Class="box-tools pull-right">
+                                    <div class="has-feedback">
+                                        <Button type="submit" Class="btn btn-primary"><i Class="fa fa-floppy-o"></i></Button>
+                                        <a href="@Url.Action("Index", "Prefijo")" Class="btn btn-default"><i Class="fa fa-reply"></i></a>
+                                    </div>
+                                    <br />
+                                </div>
+                            </div>                            
+                           
+                            <br />
+
+                            @Html.AntiForgeryToken();
+                            @Html.HiddenFor(m => m.PrefijoId);
+                            @Html.HiddenFor(m => m.ModuloId);
+                            @Html.HiddenFor(m => m.AplicacionId);
+                            @(Html.DevExtreme().Form<Parametros.Models.VM.clsPrefijoVM>()
+                                .ID("form")
+                                .ShowValidationSummary(true)
+                                .Items(items =>
+                                {
+                                    items.AddTabbed()
+                                     .Tabs(tabItems => {
+                                         tabItems.Add()
+                                                 .Title("Prefijo")
+                                                 .Items(itemsTab1 =>
+                                                 {
+                                                     itemsTab1.AddGroup()
+                                                            .ColCount(6)
+                                                            .Items(groupItems =>
+                                                            {
+                                                                groupItems.AddSimpleFor(m => m.DocId).Editor(e => e.SelectBox().DataSource(ViewBag.DocId).OnValueChanged("DocId_ValueChanged").ValueExpr("DocId").DisplayExpr("DocDes")).ColSpan(6).IsRequired(true);
+                                                             
+                                                                groupItems.AddSimpleFor(m => m.ModuloDes).Editor(e => e.TextBox().ReadOnly(true)).ColSpan(3);
+                                                               
+                                                                groupItems.AddSimpleFor(m => m.AplicacionDes).Editor(e => e.TextBox().ReadOnly(true)).ColSpan(3);
+
+
+                                                                groupItems.AddGroup().ColSpan(2).Items(g1 =>
+                                                                {
+                                                                    g1.AddSimpleFor(m => m.PrefijoNro);
+                                                                    g1.AddSimpleFor(m => m.PrefijoIniGes).ColSpan(2);
+                                                                });
+
+                                                                groupItems.AddGroup().ColSpan(4).Items(g1 =>
+                                                                {
+                                                                    g1.AddSimpleFor(m => m.PrefijoDes);
+                                                                    g1.AddSimpleFor(m => m.PrefijoTipoId).Editor(e => e.SelectBox().DataSource(ViewBag.PrefijoTipoId).ValueExpr("Value").DisplayExpr("Name")).ColSpan(4);
+                                                                });
+
+
+                                                                groupItems.AddSimpleFor(m => m.EstadoId).Editor(e => e.SelectBox().DataSource(ViewBag.EstadoId).ValueExpr("EstadoId").DisplayExpr("EstadoDes")).ColSpan(3);
+                                                            });
+
+                                                     itemsTab1.AddGroup()
+                                                     .Caption("Numeración")
+                                                     .ColCount(6)
+                                                     .Items(groupItems =>
+                                                     {
+                                                         groupItems.AddGroup().ColSpan(2).Items(g1 =>
+                                                         {
+                                                             g1.AddSimpleFor(m => m.ItemMax);
+                                                             g1.AddSimpleFor(m => m.PrefijoCopiaId).Editor(e => e.SelectBox().DataSource(ViewBag.PrefijoCopiaId).ValueExpr("Value").DisplayExpr("Name"));
+                                                         });
+
+
+                                                         groupItems.AddGroup().ColSpan(4).Items(g2 =>
+                                                         {
+                                                             g2.AddSimpleFor(m => m.FormatoImpId).Editor(e => e.SelectBox().DataSource(ViewBag.FormatoImpId).ValueExpr("FormatoImpId").DisplayExpr("FormatoImpDes")).IsRequired(true);
+                                                             g2.AddSimpleFor(m => m.MensajeFor).Editor(e => e.TextBox());
+                                                         });
+
+
+                                                     });
+                                                 });
+                                         tabItems.Add()
+                                                 .Title("Impresión")
+                                                 .Items(itemsTab2 => {
+                                                     itemsTab2.AddGroup()
+                                                            .ColCount(6)
+                                                            .Caption("Razon Social ")
+                                                            .Items(groupItems =>
+                                                            {
+                                                                groupItems.AddSimpleFor(m => m.TipoEncabezadoId).Editor(e => e.SelectBox().DataSource(ViewBag.TipoEncabezadoId).ValueExpr("Value").DisplayExpr("Name")).ColSpan(6);
+                                                                groupItems.AddSimpleFor(m => m.RazonSoc).ColSpan(4);
+                                                                groupItems.AddSimpleFor(m => m.RazonSocAbr).ColSpan(2);
+
+                                                            });
+
+
+
+                                                     itemsTab2.AddGroup()
+                                                     .Caption("Firmas")
+                                                     .ColCount(4)
+                                                     .Items(groupItems =>
+                                                     {
+                                                         groupItems.AddSimpleFor(m => m.FirmaUno).Label(l=>l.Location(FormLabelLocation.Top).ShowColon(false).Text("Primera"));
+                                                         groupItems.AddSimpleFor(m => m.FirmaSeg).Label(l => l.Location(FormLabelLocation.Top).ShowColon(false).Text("Segunda"));
+                                                         groupItems.AddSimpleFor(m => m.FirmaTre).Label(l => l.Location(FormLabelLocation.Top).ShowColon(false).Text("Tercera"));
+                                                         groupItems.AddSimpleFor(m => m.FirmaCua).Label(l => l.Location(FormLabelLocation.Top).ShowColon(false).Text("Cuarta"));
+                                                     });
+
+                                                     itemsTab2.AddGroup()
+                                                    .Caption(" ")
+                                                       .ColCount(2)
+                                                       .Items(groupItems =>
+                                                       {
+                                                           groupItems.AddSimpleFor(m => m.ImprimeUsr);
+                                                           groupItems.AddSimpleFor(m => m.ImprimeFec);
+
+                                                       });
+
+                                                     itemsTab2.AddGroup()
+                                                     .Caption("Observaciones")
+
+                                                        .Items(groupItems =>
+                                                        {
+                                                            groupItems.AddSimpleFor(m => m.ObsUno);
+                                                            groupItems.AddSimpleFor(m => m.ObsDos);
+
+                                                        });
+
+                                                 });
+                                     });
+
+
+
+                                })
+                                .FormData(Model)
+                        )
+
+                           
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@if (!ReferenceEquals(ViewBag.MessageErr, null))
+{
+    @(Html.DevExtreme().Popup()
+        .ID("info-popup")
+        .Width("auto")
+        .Height("auto")
+        .ShowTitle(true)
+        .Title("Información")
+        .Visible(true)
+        .DragEnabled(false)
+        .CloseOnOutsideClick(true)
+        .ContentTemplate(@<text>
+            @Html.Raw(ViewBag.MessageErr.Replace(Environment.NewLine, "<br />"))
+        </text>)
+    )
+}
+
+<script>
+
+    function getFormInstance() {
+        return $("#form").dxForm("instance");
+    }
+
+    var View
+
+     var DocList = @Html.Raw(Json.Encode(ViewBag.DocId));
+
+    function DocId_ValueChanged(data) {
+        var id = data.value;
+       
+
+        $.each(DocList, function (i, item) {
+            if (item.DocId == id) {
+               
+                getFormInstance().getEditor("ModuloDes").option("value",item.ModuloId+"-"+ item.ModuloDes);
+                getFormInstance().getEditor("AplicacionDes").option("value", item.AplicacionDes);
+                $("#ModuloId").val(item.ModuloId);
+                $("#AplicacionId").val(item.AplicacionId);
+            }
+        }); 
+
+       
+    }
+
+
+
+</script>
+
+
