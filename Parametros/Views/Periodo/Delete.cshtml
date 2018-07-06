@@ -26,11 +26,13 @@
                                         groupItems.AddGroup()
                                         .Items(nestedItems =>
                                         {
-                                            nestedItems.AddSimpleFor(m => m.GestionId).Editor(e => e.SelectBox().DataSource(ViewBag.GestionId).ValueExpr("GestionId").DisplayExpr("GestionNro").Disabled(true));
-                                            nestedItems.AddSimpleFor(m => m.MesId).Editor(e => e.SelectBox().DataSource(ViewBag.MesId).ValueExpr("MesId").DisplayExpr("MesDes").Disabled(true));
+                                            // Modificado por Carlos: 
+                                            nestedItems.AddSimpleFor(m => m.GestionId).Editor(e => e.SelectBox().DataSource(d => d.Mvc().Controller("ComboBox").LoadAction("GestionList").Key("GestionId")).ValueExpr("GestionId").DisplayExpr("GestionNro").Disabled(true)).IsRequired(true);
+                                            nestedItems.AddSimpleFor(m => m.MesId).Editor(e => e.SelectBox().DataSource(d => d.Mvc().Controller("ComboBox").LoadAction("MesList").Key("MesId")).ValueExpr("MesId").DisplayExpr("MesDes").Disabled(true)).IsRequired(true);
                                             nestedItems.AddSimpleFor(m => m.PeriodoFecIni).Editor(e => e.DateBox().DisplayFormat("dd/MM/yyyy").Width("100%").Disabled(true));
                                             nestedItems.AddSimpleFor(m => m.PeriodoFecFin).Editor(e => e.DateBox().DisplayFormat("dd/MM/yyyy").Width("100%").Disabled(true));
-                                            nestedItems.AddSimpleFor(m => m.EstadoId).Editor(e => e.SelectBox().DataSource(ViewBag.EstadoId).ValueExpr("EstadoId").DisplayExpr("EstadoDes").Disabled(true));
+                                            nestedItems.AddSimpleFor(m => m.EstadoId).Editor(e => e.SelectBox().DataSource(d => d.Mvc().Controller("ComboBox").LoadAction("EstadoList").Key("EstadoId")).ValueExpr("EstadoId").DisplayExpr("EstadoDes").Disabled(true)).IsRequired(true);
+
                                         });
                                     });
                                 })

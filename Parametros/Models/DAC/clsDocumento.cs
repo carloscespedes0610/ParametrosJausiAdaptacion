@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Parametros.Models.VM;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -9,7 +10,10 @@ namespace Parametros.Models.DAC
 {
     public class clsDocumento : clsBase, IDisposable
     {
-        private long mlngDocId;
+        public clsDocumentoVM VM;
+
+        // Comentado por Carlos:
+        /*private long mlngDocId;
         private String mstrDocCod;       
         private String mstrDocNem;
         private String mstrDocDes;
@@ -20,12 +24,6 @@ namespace Parametros.Models.DAC
         private long mlngAplicacionId;
         private long mlngEstadoId;
 
-        //******************************************************
-        // Private Data To Match the Table Definition
-        //******************************************************
-
-
-
         public long DocId { get => mlngDocId; set => mlngDocId = value; }
         public string DocCod { get => mstrDocCod; set => mstrDocCod = value; }
         public long ModuloId { get => mlngModuloId; set => mlngModuloId = value; }
@@ -35,7 +33,7 @@ namespace Parametros.Models.DAC
         public string DocIso { get => mstrDocIso; set => mstrDocIso = value; }
         public string DocRev { get => mstrDocRev; set => mstrDocRev = value; }
         public string DocFec { get => mdatDocFec; set => mdatDocFec = value; }
-        public long EstadoId { get => mlngEstadoId; set => mlngEstadoId = value; }
+        public long EstadoId { get => mlngEstadoId; set => mlngEstadoId = value; }*/
 
 
 
@@ -170,20 +168,139 @@ namespace Parametros.Models.DAC
 
         public void PropertyInit()
         {
-            mlngDocId = 0;
-            mstrDocCod = "";           
-            mstrDocNem = "";
-            mstrDocDes = "";
-            mstrDocIso = "";
-            mstrDocRev = "";
-            mdatDocFec = "";
-            mlngModuloId = 0;
-            mlngAplicacionId = 0;
-            mlngEstadoId = 0;
+            // Modificado por Carlos: 
+            VM = new clsDocumentoVM();
+            VM.DocId = 0;
+            VM.DocCod = String.Empty;
+            VM.DocNem = String.Empty;
+            VM.DocDes = String.Empty;
+            VM.DocIso = String.Empty;
+            VM.DocRev = String.Empty;
+            VM.DocFec = DateTime.Now;
+            VM.ModuloId = 0;
+            VM.ModuloDes = String.Empty;
+            VM.AplicacionId = 0;
+            VM.AplicacionDes = String.Empty;
+            VM.EstadoId = 0;
+            VM.EstadoDes = String.Empty;
 
         }
 
+        // Modificado por Carlos:
         protected override void SelectParameter()
+        {
+            string strSQL = null;
+
+            mstrStoreProcName = "parDocSelect";
+
+            switch (mintSelectFilter)
+            {
+                case SelectFilters.All:
+                    strSQL = " SELECT  " +
+                           "    parDoc.DocId, " +
+                           "    parDoc.DocCod, " +
+                           "    parDoc.DocDes, " +
+                           "    parDoc.DocNem, " +
+                           "    parDoc.DocIso, " +
+                           "    parDoc.DocRev, " +
+                           "    parDoc.DocFec, " +
+                           "    parDoc.ModuloId, " +
+                           "    parDoc.AplicacionId, " +
+                           "    parDoc.EstadoId " +
+                           " FROM parDoc ";
+                    break;
+
+                case SelectFilters.ListBox:
+                    strSQL = " SELECT  " +
+                          "    parDoc.DocId, " +
+                          "    parDoc.DocCod, " +
+                          "    parDoc.DocDes, " +
+                          " FROM parDoc ";
+                    break;
+
+                case SelectFilters.Grid:
+                    strSQL = " SELECT  " +
+                            "    parDoc.DocId, " +
+                            "    parDoc.DocCod, " +
+                            "    parDoc.DocDes, " +
+                            "    parDoc.DocNem, " +
+                            "    parDoc.DocIso, " +
+                            "    parDoc.DocRev, " +
+                            "    parDoc.DocFec, " +
+                            "    parDoc.ModuloId, " +
+                            "    segModulo.ModuloDes, " +
+                            "    parDoc.AplicacionId, " +
+                            "    segAplicacion.AplicacionDes, " +
+                            "    parDoc.EstadoId, " +
+                            "    parEstado.EstadoDes " +
+                            " FROM parDoc " +
+                            "   LEFT JOIN segAplicacion ON parDoc.AplicacionId = segAplicacion.AplicacionId " +
+                            "   LEFT JOIN segModulo ON parDoc.ModuloId = segModulo.ModuloId " +
+                            "   LEFT JOIN parEstado ON parDoc.EstadoId = parEstado.EstadoId ";
+                    break;
+
+                case SelectFilters.GridCheck:
+                    break;
+            }
+
+            strSQL += WhereFilterGet() + OrderByFilterGet();
+
+            Array.Resize(ref moParameters, 1);
+            moParameters[0] = new SqlParameter("@SQL", strSQL);
+        }
+
+        // Agregado por Carlos: 
+        private string WhereFilterGet()
+        {
+            string strSQL = null;
+
+            switch (mintWhereFilter)
+            {
+                case WhereFilters.PrimaryKey:
+                    strSQL = " WHERE DocId = " + SysData.NumberToField(VM.DocId);
+                    break;
+
+                case WhereFilters.Grid:
+                    break;
+
+                case WhereFilters.MesId:
+                    break;
+
+                case WhereFilters.GridCheck:
+                    break;
+
+            }
+
+            return strSQL;
+        }
+
+        // Agregado por Carlos: 
+        private string OrderByFilterGet()
+        {
+            string strSQL = null;
+
+            switch (mintOrderByFilter)
+            {
+                case OrderByFilters.Grid:
+                    strSQL = " ORDER BY parDoc.DocDes ";
+                    break;
+
+                case OrderByFilters.GridCheck:
+                    break;
+
+                case OrderByFilters.Mes:
+                    break;
+
+                case OrderByFilters.PeriodoId:
+                    break;
+            }
+
+            return strSQL;
+        }
+
+
+        // Comentado por Carlos: 
+        /*protected override void SelectParameter()
         {
             Array.Resize(ref moParameters, 3);
             moParameters[0] = new SqlParameter("@SelectFilter", mintSelectFilter);
@@ -242,7 +359,7 @@ namespace Parametros.Models.DAC
 
 
             }
-        }
+        }*/
 
         protected override void InsertParameter()
         {
@@ -254,15 +371,15 @@ namespace Parametros.Models.DAC
                     {
                     new SqlParameter("@InsertFilter", mintInsertFilter),
                     new SqlParameter("@Id", SqlDbType.Int),
-                    new SqlParameter("@DocCod", mstrDocCod),                   
-                    new SqlParameter("@DocNem", mstrDocNem),
-                    new SqlParameter("@DocDes", mstrDocDes),
-                    new SqlParameter("@DocIso", mstrDocIso),
-                    new SqlParameter("@DocRev", mstrDocRev),
-                    new SqlParameter("@DocFec", mdatDocFec),
-                    new SqlParameter("@ModuloId", mlngModuloId),
-                    new SqlParameter("@AplicacionId", mlngAplicacionId),
-                    new SqlParameter("@EstadoId", mlngEstadoId)
+                    new SqlParameter(clsDocumentoVM._DocCod, VM.DocCod),                   
+                    new SqlParameter(clsDocumentoVM._DocNem, VM.DocNem),
+                    new SqlParameter(clsDocumentoVM._DocDes, VM.DocDes),
+                    new SqlParameter(clsDocumentoVM._DocIso, VM.DocIso),
+                    new SqlParameter(clsDocumentoVM._DocRev, VM.DocRev),
+                    new SqlParameter(clsDocumentoVM._DocFec, VM.DocFec),
+                    new SqlParameter(clsDocumentoVM._ModuloId, VM.ModuloId),
+                    new SqlParameter(clsDocumentoVM._AplicacionId, VM.AplicacionId),
+                    new SqlParameter(clsDocumentoVM._EstadoId, VM.EstadoId)
                     };
                     moParameters[1].Direction = ParameterDirection.Output;
 
@@ -279,16 +396,16 @@ namespace Parametros.Models.DAC
                     moParameters = new SqlParameter[11]
                     {
                     new SqlParameter("@UpdateFilter", mintUpdateFilter),
-                    new SqlParameter("@DocId", mlngDocId),
-                    new SqlParameter("@DocCod", mstrDocCod),                   
-                    new SqlParameter("@DocNem", mstrDocNem),
-                    new SqlParameter("@DocDes", mstrDocDes),
-                    new SqlParameter("@DocIso", mstrDocIso),
-                    new SqlParameter("@DocRev", mstrDocRev),
-                    new SqlParameter("@DocFec", mdatDocFec),
-                    new SqlParameter("@ModuloId", mlngModuloId),
-                    new SqlParameter("@AplicacionId", mlngAplicacionId),
-                    new SqlParameter("@EstadoId", mlngEstadoId)
+                    new SqlParameter(clsDocumentoVM._DocId, VM.DocId),
+                    new SqlParameter(clsDocumentoVM._DocCod, VM.DocCod),                   
+                    new SqlParameter(clsDocumentoVM._DocNem, VM.DocNem),
+                    new SqlParameter(clsDocumentoVM._DocDes, VM.DocDes),
+                    new SqlParameter(clsDocumentoVM._DocIso, VM.DocIso),
+                    new SqlParameter(clsDocumentoVM._DocRev, VM.DocRev),
+                    new SqlParameter(clsDocumentoVM._DocFec, VM.DocFec),
+                    new SqlParameter(clsDocumentoVM._ModuloId, VM.ModuloId),
+                    new SqlParameter(clsDocumentoVM._AplicacionId, VM.AplicacionId),
+                    new SqlParameter(clsDocumentoVM._EstadoId, VM.EstadoId)
                     };
 
                     break;
@@ -304,7 +421,7 @@ namespace Parametros.Models.DAC
                     moParameters = new SqlParameter[2]
                     {
                     new SqlParameter("@DeleteFilter", mintDeleteFilter),
-                    new SqlParameter("@DocId", mlngDocId)
+                    new SqlParameter(clsDocumentoVM._DocId, VM.DocId)
                     };
 
                     break;
@@ -320,16 +437,16 @@ namespace Parametros.Models.DAC
                 switch (mintSelectFilter)
                 {
                     case SelectFilters.All:
-                        mlngDocId = SysData.ToLong(oDataRow["DocId"]);
-                        mstrDocCod= SysData.ToStr(oDataRow["DocCod"]);
-                        mstrDocNem = SysData.ToStr(oDataRow["DocNem"]);
-                        mstrDocDes = SysData.ToStr(oDataRow["DocDes"]);
-                        mstrDocRev = SysData.ToStr(oDataRow["DocRev"]);
-                        mstrDocIso = SysData.ToStr(oDataRow["DocIso"]);
-                        mdatDocFec = SysData.ToStr(oDataRow["DocFec"]);
-                        mlngAplicacionId = SysData.ToLong(oDataRow["AplicacionId"]);
-                        mlngModuloId= SysData.ToLong(oDataRow["ModuloId"]);
-                        mlngEstadoId = SysData.ToLong(oDataRow["EstadoId"]);
+                        VM.DocId = SysData.ToLong(oDataRow[clsDocumentoVM._DocId]);
+                        VM.DocCod = SysData.ToStr(oDataRow[clsDocumentoVM._DocCod]);
+                        VM.DocNem = SysData.ToStr(oDataRow[clsDocumentoVM._DocNem]);
+                        VM.DocDes = SysData.ToStr(oDataRow[clsDocumentoVM._DocDes]);
+                        VM.DocRev = SysData.ToStr(oDataRow[clsDocumentoVM._DocRev]);
+                        VM.DocIso = SysData.ToStr(oDataRow[clsDocumentoVM._DocIso]);
+                        VM.DocFec = SysData.ToDateTime(oDataRow[clsDocumentoVM._DocFec]);
+                        VM.AplicacionId = SysData.ToLong(oDataRow[clsDocumentoVM._AplicacionId]);
+                        VM.ModuloId = SysData.ToLong(oDataRow[clsDocumentoVM._ModuloId]);
+                        VM.EstadoId = SysData.ToLong(oDataRow[clsDocumentoVM._EstadoId]);
                         break;
 
                     case SelectFilters.ListBox:
@@ -407,9 +524,10 @@ namespace Parametros.Models.DAC
             //Call CloseConection()
         }
 
+        // Agregado por Carlos: 
         protected override void SetPrimaryKey()
         {
-            throw new NotImplementedException();
+            VM.DocId = mlngId;
         }
     }
 }

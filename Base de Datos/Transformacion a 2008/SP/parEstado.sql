@@ -1,7 +1,7 @@
 /************************************************************/
 /*  STORE PROCEDURE	: parEstadoSelect				*/
 /*  AUTOR			: Joel Mercado          		*/
-/*  MODIFICACION	: Carlos Cespedes (06/10/2018)	*/
+/*  MODIFICACION	: Carlos Cespedes (06/07/2018)	*/
 /*  FECHA			: 28/03/2018					*/
 /*  DESCRIPCION		: 						    */
 /***********************************************************/

@@ -263,7 +263,7 @@ namespace Parametros.Models.DAC
                              "    segModulo.ModuloCod, " +
                              "    segModulo.ModuloDes, " +
                              "    segModulo.ModuloEsp, " +
-                             "    segModulo.EstadoId " +
+                             "    segModulo.EstadoId, " +
                              "    parEstado.EstadoDes " +
                              " FROM  segModulo " +
                              " LEFT JOIN parEstado ON segModulo.EstadoId = parEstado.EstadoId	";

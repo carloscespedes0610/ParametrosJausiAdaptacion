@@ -213,7 +213,7 @@ namespace Parametros.Controllers
                 clsDocumento oDocumento = new clsDocumento(clsAppInfo.Connection);
 
                 oDocumento.WhereFilter = clsDocumento.WhereFilters.PrimaryKey;
-                oDocumento.DocId = Convert.ToInt32(DocId);
+                oDocumento.VM.DocId = Convert.ToInt32(DocId);
 
                 if (oDocumento.Delete())
                 {
@@ -234,7 +234,7 @@ namespace Parametros.Controllers
 
 
         //-----------------------------------------
-
+        // Modificado por Carlos:
         private clsDocumentoVM DocumentoFind(int DocId)
         {
             clsDocumento oDocumento = new clsDocumento(clsAppInfo.Connection);
@@ -242,19 +242,19 @@ namespace Parametros.Controllers
 
             try
             {
-                oDocumento.DocId = DocId;
+                oDocumento.VM.DocId = DocId;
                 if (oDocumento.FindByPK())
                 {
-                    oDocumentoVM.DocId = SysData.ToLong(oDocumento.DocId);
-                    oDocumentoVM.DocCod = SysData.ToStr(oDocumento.DocCod);
-                    oDocumentoVM.DocNem = SysData.ToStr(oDocumento.DocNem);
-                    oDocumentoVM.DocDes = SysData.ToStr(oDocumento.DocDes);
-                    oDocumentoVM.DocIso = SysData.ToStr(oDocumento.DocIso);
-                    oDocumentoVM.DocRev = SysData.ToStr(oDocumento.DocRev);
-                    oDocumentoVM.DocFec = SysData.ToStr(oDocumento.DocFec);
-                    oDocumentoVM.AplicacionId = SysData.ToLong(oDocumento.AplicacionId);
-                    oDocumentoVM.ModuloId = SysData.ToLong(oDocumento.ModuloId);
-                    oDocumentoVM.EstadoId = SysData.ToLong(oDocumento.EstadoId);
+                    oDocumentoVM.DocId = SysData.ToLong(oDocumento.VM.DocId);
+                    oDocumentoVM.DocCod = SysData.ToStr(oDocumento.VM.DocCod);
+                    oDocumentoVM.DocNem = SysData.ToStr(oDocumento.VM.DocNem);
+                    oDocumentoVM.DocDes = SysData.ToStr(oDocumento.VM.DocDes);
+                    oDocumentoVM.DocIso = SysData.ToStr(oDocumento.VM.DocIso);
+                    oDocumentoVM.DocRev = SysData.ToStr(oDocumento.VM.DocRev);
+                    oDocumentoVM.DocFec = SysData.ToDateTime(oDocumento.VM.DocFec);
+                    oDocumentoVM.AplicacionId = SysData.ToLong(oDocumento.VM.AplicacionId);
+                    oDocumentoVM.ModuloId = SysData.ToLong(oDocumento.VM.ModuloId);
+                    oDocumentoVM.EstadoId = SysData.ToLong(oDocumento.VM.EstadoId);
                 }
             }
             catch (Exception exp)
@@ -267,23 +267,23 @@ namespace Parametros.Controllers
             return oDocumentoVM;
         }
 
-
+        // Modificado por Carlos:
         private void DataMove(clsDocumento oDocumento, clsDocumentoVM oDocVM, bool editing)
         {
 
             if (editing) {
-                oDocumento.DocId = SysData.ToLong(oDocVM.DocId);
+                oDocumento.VM.DocId = SysData.ToLong(oDocVM.DocId);
             }
 
-            oDocumento.DocCod = SysData.ToStr(oDocVM.DocCod);
-            oDocumento.DocNem = SysData.ToStr(oDocVM.DocNem);
-            oDocumento.DocDes = SysData.ToStr(oDocVM.DocDes);
-            oDocumento.DocIso = SysData.ToStr(oDocVM.DocIso);
-            oDocumento.DocRev = SysData.ToStr(oDocVM.DocRev);
-            oDocumento.DocFec = SysData.ToStr(oDocVM.DocFec);
-            oDocumento.AplicacionId = SysData.ToLong(oDocVM.AplicacionId);
-            oDocumento.ModuloId = SysData.ToLong(oDocVM.ModuloId);
-            oDocumento.EstadoId = SysData.ToLong(oDocVM.EstadoId);
+            oDocumento.VM.DocCod = SysData.ToStr(oDocVM.DocCod);
+            oDocumento.VM.DocNem = SysData.ToStr(oDocVM.DocNem);
+            oDocumento.VM.DocDes = SysData.ToStr(oDocVM.DocDes);
+            oDocumento.VM.DocIso = SysData.ToStr(oDocVM.DocIso);
+            oDocumento.VM.DocRev = SysData.ToStr(oDocVM.DocRev);
+            oDocumento.VM.DocFec = SysData.ToDateTime(oDocVM.DocFec);
+            oDocumento.VM.AplicacionId = SysData.ToLong(oDocVM.AplicacionId);
+            oDocumento.VM.ModuloId = SysData.ToLong(oDocVM.ModuloId);
+            oDocumento.VM.EstadoId = SysData.ToLong(oDocVM.EstadoId);
         }
 
 
@@ -313,8 +313,8 @@ namespace Parametros.Controllers
                     foreach (DataRow dr in oModulo.DataSet.Tables[oModulo.TableName].Rows)
                     {
                         oModVM.Add(new clsModuloVM()                        {
-                            ModuloId = SysData.ToLong(dr["ModuloId"]),
-                            ModuloDes = SysData.ToStr(dr["ModuloDes"])
+                            ModuloId = SysData.ToLong(dr[clsModuloVM._ModuloId]),
+                            ModuloDes = SysData.ToStr(dr[clsModuloVM._ModuloDes])
                         });
                     }
                 }
@@ -353,9 +353,9 @@ namespace Parametros.Controllers
                     {
                         oAppVM.Add(new clsAplicacionVM()
                         {
-                            AplicacionId = SysData.ToLong(dr["AplicacionId"]),
-                            AplicacionDes = SysData.ToStr(dr["AplicacionDes"]),
-                            ModuloId = SysData.ToLong(dr["ModuloId"])
+                            AplicacionId = SysData.ToLong(dr[clsAplicacionVM._AplicacionId]),
+                            AplicacionDes = SysData.ToStr(dr[clsAplicacionVM._AplicacionDes]),
+                            ModuloId = SysData.ToLong(dr[clsModuloVM._ModuloId])
                         });
                     }
                 }
@@ -375,6 +375,7 @@ namespace Parametros.Controllers
             return oAppVM;
         }
 
+        // Modificado por Carlos:
         private object Documentos()
         {
             clsDocumento oDocumento = new clsDocumento(clsAppInfo.Connection);
@@ -394,16 +395,16 @@ namespace Parametros.Controllers
                     {
                         oDocVM.Add(new clsDocumentoVM()
                         {
-                            DocId = SysData.ToLong(dr["DocId"]),
-                            DocCod = SysData.ToStr(dr["DocCod"]),
-                            DocNem = SysData.ToStr(dr["DocNem"]),
-                            DocDes = SysData.ToStr(dr["DocDes"]),
-                            DocIso = SysData.ToStr(dr["DocCod"]),
-                            DocRev = SysData.ToStr(dr["DocRev"]),
-                            DocFec = SysData.ToStr(dr["DocRev"]),
-                            ModuloDes = SysData.ToStr(dr["ModuloDes"]),
-                            AplicacionDes = SysData.ToStr(dr["AplicacionDes"]),
-                            EstadoDes = SysData.ToStr(dr["EstadoDes"])
+                            DocId = SysData.ToLong(dr[clsDocumentoVM._DocId]),
+                            DocCod = SysData.ToStr(dr[clsDocumentoVM._DocCod]),
+                            DocNem = SysData.ToStr(dr[clsDocumentoVM._DocNem]),
+                            DocDes = SysData.ToStr(dr[clsDocumentoVM._DocDes]),
+                            DocIso = SysData.ToStr(dr[clsDocumentoVM._DocCod]),
+                            DocRev = SysData.ToStr(dr[clsDocumentoVM._DocRev]),
+                            DocFec = SysData.ToDateTime(dr[clsDocumentoVM._DocRev]),
+                            ModuloDes = SysData.ToStr(dr[clsDocumentoVM._ModuloDes]),
+                            AplicacionDes = SysData.ToStr(dr[clsDocumentoVM._AplicacionDes]),
+                            EstadoDes = SysData.ToStr(dr[clsDocumentoVM._EstadoDes])
                         });
                     }
                 }

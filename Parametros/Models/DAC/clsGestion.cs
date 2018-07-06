@@ -328,8 +328,8 @@ namespace Parametros.Models.DAC
             return strSQL;
         }
 
-
-        private void WhereParameter()
+        // Comentado por Carlos: 
+        /*private void WhereParameter()
         {
             switch (mintWhereFilter)
             {
@@ -359,7 +359,7 @@ namespace Parametros.Models.DAC
                     break;
 
             }
-        }
+        }*/
 
         protected override void InsertParameter()
         {

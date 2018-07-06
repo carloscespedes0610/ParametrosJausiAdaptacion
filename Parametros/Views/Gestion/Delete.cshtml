@@ -26,16 +26,17 @@
                                 .ShowValidationSummary(true)
                                 .Items(items =>
                                 {
-                                   
-                                        items.AddGroup()
-                                        .Items(nestedItems =>
-                                        {
-                                            nestedItems.AddSimpleFor(m => m.GestionNro).Editor(e => e.TextBox().Width("50%").Disabled(true));
-                                            nestedItems.AddSimpleFor(m => m.GestionFecIni).Editor(e => e.DateBox().DisplayFormat("dd/MM/yyyy").Width("100%").Disabled(true));
-                                            nestedItems.AddSimpleFor(m => m.GestionFecFin).Editor(e => e.DateBox().DisplayFormat("dd/MM/yyyy").Width("100%").Disabled(true));
-                                            nestedItems.AddSimpleFor(m => m.EstadoId).Editor(e => e.SelectBox().ID("dxEstado").DataSource(d => d.Mvc().Controller("ComboBox").LoadAction("EstadoList").Key("EstadoId")).ValueExpr("EstadoId").DisplayExpr("EstadoDes"));
-                                        });
-                                   
+
+                                    items.AddGroup()
+                                    .Items(nestedItems =>
+                                    {
+                                        nestedItems.AddSimpleFor(m => m.GestionNro).Editor(e => e.TextBox().Width("50%").Disabled(true));
+                                        nestedItems.AddSimpleFor(m => m.GestionFecIni).Editor(e => e.DateBox().DisplayFormat("dd/MM/yyyy").Width("100%").Disabled(true));
+                                        nestedItems.AddSimpleFor(m => m.GestionFecFin).Editor(e => e.DateBox().DisplayFormat("dd/MM/yyyy").Width("100%").Disabled(true));
+                                        // Modificado por Carlos: 
+                                        nestedItems.AddSimpleFor(m => m.EstadoId).Editor(e => e.SelectBox().ID("dxEstado").DataSource(d => d.Mvc().Controller("ComboBox").LoadAction("EstadoList").Key("EstadoId")).ValueExpr("EstadoId").DisplayExpr("EstadoDes").Disabled(true));
+                                    });
+
                                 })
                                 .FormData(Model)
                             )

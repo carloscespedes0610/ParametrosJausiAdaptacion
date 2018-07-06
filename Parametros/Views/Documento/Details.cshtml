@@ -40,9 +40,15 @@
 
                                             nestedItems.AddSimpleFor(m => m.DocIso).Editor(e => e.TextBox().Disabled(true));
                                             nestedItems.AddSimpleFor(m => m.DocRev).Editor(e => e.TextBox().Disabled(true));
-                                            nestedItems.AddSimpleFor(m => m.DocFec).Editor(e => e.TextBox().Disabled(true));
+
+                                            // Modificado por Carlos: 
+                                            nestedItems.AddSimpleFor(m => m.DocFec).Editor(e => e.DateBox().DisplayFormat("dd/MM/yyyy").Width("100%"));
+
                                             nestedItems.AddSimpleFor(m => m.EstadoId).Editor(e => e.SelectBox().DataSource(ViewBag.EstadoId).ValueExpr("EstadoId").DisplayExpr("EstadoDes").Disabled(true));
                                         });
+
+
+
                                     });
                                 })
                                 .FormData(Model)

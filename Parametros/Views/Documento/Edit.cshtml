@@ -29,7 +29,8 @@
                                     .Items(groupItems =>
                                     {
 
-                                        groupItems.AddSimpleFor(m => m.DocCod).Editor(e => e.TextBox().Width("50%"));
+                                        // Modificado por Carlos:
+                                        groupItems.AddSimpleFor(m => m.DocCod).Editor(e => e.TextBox().Width("50%").Disabled(true));
                                         groupItems.AddSimpleFor(m => m.DocNem).Editor(e => e.TextBox());
                                         groupItems.AddSimpleFor(m => m.DocDes).Editor(e => e.TextBox());
 
@@ -39,7 +40,11 @@
 
                                         groupItems.AddSimpleFor(m => m.DocIso).Editor(e => e.TextBox());
                                         groupItems.AddSimpleFor(m => m.DocRev).Editor(e => e.TextBox());
-                                        groupItems.AddSimpleFor(m => m.DocFec).Editor(e => e.TextBox());
+
+                                        // Modificado por Carlos:
+                                        //groupItems.AddSimpleFor(m => m.DocFec).Editor(e => e.TextBox());
+                                        groupItems.AddSimpleFor(m => m.DocFec).Editor(e => e.DateBox().OnValueChanged("FecVen_Changed").DisplayFormat("dd/MM/yyyy").Width("100%"));
+
                                         groupItems.AddSimpleFor(m => m.EstadoId).Editor(e => e.SelectBox().DataSource(ViewBag.EstadoId).ValueExpr("EstadoId").DisplayExpr("EstadoDes")).IsRequired(true);
 
                                     });
@@ -81,5 +86,11 @@
     function onValueChanged(e) {
         $("#Aplicacion").dxSelectBox("instance").getDataSource().filter(["ModuloId", "=", e.value]);
         $("#Aplicacion").dxSelectBox("instance").getDataSource().reload();
+    }
+
+
+    // Agregado por Carlos: 
+    function FecVen_Changed(data) {
+        var date = data.value;
     }
 </script>

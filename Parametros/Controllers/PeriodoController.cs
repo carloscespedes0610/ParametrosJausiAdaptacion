@@ -312,7 +312,6 @@ namespace Parametros.Controllers
             {
                 oPeriodo.Dispose();
             }
-            return oPeriodoVM;
         }
 
        
