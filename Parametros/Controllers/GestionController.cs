@@ -24,7 +24,7 @@ namespace Parametros.Controllers
         {
             try
             {
-                this.GetDefaultData();               
+                this.GetDefaultData(); 
                 return View();
             }
 

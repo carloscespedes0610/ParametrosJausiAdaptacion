@@ -514,9 +514,11 @@ namespace Parametros.Models.DAC
             //Call CloseConection()
         }
 
+        // Agregado por Carlos: 
         protected override void SetPrimaryKey()
         {
-            throw new NotImplementedException();
+            VM.GestionId = mlngId;
+            
         }
     }
 }
